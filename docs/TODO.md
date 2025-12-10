@@ -579,94 +579,250 @@
 
 ## Phase 3: 상세페이지 (`/places/[contentId]`)
 
-- [ ] 페이지 기본 구조
-  - [ ] `app/places/[contentId]/page.tsx` 생성
-    - [ ] 동적 라우팅 설정
-    - [ ] 뒤로가기 버튼 (헤더)
-    - [ ] 기본 레이아웃 구조
-    - [ ] 라우팅 테스트
-- [ ] 기본 정보 섹션 (MVP 2.4.1)
-  - [ ] `components/tour-detail/detail-info.tsx` 생성
-    - [ ] `getDetailCommon()` API 연동
-    - [ ] 관광지명 (대제목)
-    - [ ] 대표 이미지 (크게 표시)
-    - [ ] 주소 표시 및 복사 기능
-      - [ ] 클립보드 API 사용
-      - [ ] 복사 완료 토스트
-    - [ ] 전화번호 (클릭 시 전화 연결)
-    - [ ] 홈페이지 (링크)
-    - [ ] 개요 (긴 설명문)
-    - [ ] 관광 타입 및 카테고리 뱃지
-    - [ ] 정보 없는 항목 숨김 처리
-- [ ] 운영 정보 섹션 (MVP 2.4.2)
-  - [ ] `components/tour-detail/detail-intro.tsx` 생성
-    - [ ] `getDetailIntro()` API 연동
-    - [ ] 운영시간/개장시간
-    - [ ] 휴무일
-    - [ ] 이용요금
-    - [ ] 주차 가능 여부
-    - [ ] 수용인원
-    - [ ] 체험 프로그램
-    - [ ] 유모차/반려동물 동반 가능 여부
-    - [ ] 정보 없는 항목 숨김 처리
-- [ ] 이미지 갤러리 (MVP 2.4.3)
-  - [ ] `components/tour-detail/detail-gallery.tsx` 생성
-    - [ ] `getDetailImage()` API 연동
-    - [ ] 대표 이미지 + 서브 이미지들
-    - [ ] 이미지 슬라이드 기능 (Swiper 또는 캐러셀)
-    - [ ] 이미지 클릭 시 전체화면 모달
-    - [ ] 이미지 없으면 기본 이미지
-    - [ ] Next.js Image 컴포넌트 사용 (최적화)
-- [ ] 지도 섹션 (MVP 2.4.4)
-  - [ ] `components/tour-detail/detail-map.tsx` 생성
-    - [ ] 해당 관광지 위치 표시
-    - [ ] 마커 1개 표시
-    - [ ] "길찾기" 버튼
-      - [ ] 네이버 지도 앱/웹 연동
-      - [ ] URL: `https://map.naver.com/v5/directions/{좌표}`
-    - [ ] 좌표 정보 표시 (선택 사항)
-- [ ] 공유 기능 (MVP 2.4.5)
-  - [ ] `components/tour-detail/share-button.tsx` 생성
-    - [ ] URL 복사 기능
-      - [ ] `navigator.clipboard.writeText()` 사용
-      - [ ] HTTPS 환경 확인
-    - [ ] 복사 완료 토스트 메시지
-    - [ ] 공유 아이콘 버튼 (Share/Link 아이콘)
-  - [ ] Open Graph 메타태그
-    - [ ] `app/places/[contentId]/page.tsx`에 Metadata 생성
-    - [ ] `og:title` - 관광지명
-    - [ ] `og:description` - 관광지 설명 (100자 이내)
-    - [ ] `og:image` - 대표 이미지 (1200x630 권장)
-    - [ ] `og:url` - 상세페이지 URL
-    - [ ] `og:type` - "website"
-- [ ] 북마크 기능 (MVP 2.4.5)
-  - [ ] `components/bookmarks/bookmark-button.tsx` 생성
-    - [ ] 별 아이콘 (채워짐/비어있음)
-    - [ ] 북마크 상태 확인 (Supabase 조회)
-    - [ ] 북마크 추가/제거 기능
-    - [ ] 인증된 사용자 확인 (Clerk)
-    - [ ] 로그인하지 않은 경우: 로그인 유도 또는 localStorage 임시 저장
-  - [ ] Supabase 연동
-    - [ ] `lib/api/supabase-api.ts` 생성
-      - [ ] `getBookmark()` - 북마크 조회
-      - [ ] `addBookmark()` - 북마크 추가
-      - [ ] `removeBookmark()` - 북마크 제거
-      - [ ] `getUserBookmarks()` - 사용자 북마크 목록
-    - [ ] `bookmarks` 테이블 사용 (db.sql 참고)
-      - [ ] `user_id` (users 테이블 참조)
-      - [ ] `content_id` (한국관광공사 API contentid)
-      - [ ] UNIQUE 제약 (user_id, content_id)
-  - [ ] 상세페이지에 북마크 버튼 추가
-- [ ] 반려동물 정보 섹션 (MVP 2.5)
-  - [ ] `components/tour-detail/detail-pet-tour.tsx` 생성
-    - [ ] `getDetailPetTour()` API 연동
-    - [ ] 반려동물 동반 가능 여부 표시
-    - [ ] 반려동물 크기 제한 정보
-    - [ ] 반려동물 입장 가능 장소 (실내/실외)
-    - [ ] 반려동물 동반 추가 요금
-    - [ ] 반려동물 전용 시설 정보
-    - [ ] 아이콘 및 뱃지 디자인 (🐾)
-    - [ ] 주의사항 강조 표시
+- [x] 페이지 기본 구조
+  - [x] `app/places/[contentId]/page.tsx` 생성
+    - [x] Next.js 15 App Router 동적 라우팅 설정 (`[contentId]`)
+      - [x] 디렉토리 구조: `app/places/[contentId]/page.tsx`
+      - [x] Server Component로 구현 (초기 데이터 페칭용)
+      - [x] `params` await 처리 (Next.js 15 패턴 준수)
+      - [x] `contentId` 파라미터 추출 및 검증
+        - [x] 파라미터 타입 정의 (string)
+        - [x] 유효성 검증 (빈 값 체크)
+    - [x] 기본 레이아웃 구조
+      - [x] 반응형 컨테이너 설정
+        - [x] 데스크톱: `max-w-4xl mx-auto px-4 py-8`
+        - [x] 모바일: 전체 너비, 적절한 패딩 (`px-4 py-6`)
+      - [x] 뒤로가기 버튼 구현
+        - [x] `components/tour-detail/back-button.tsx` 컴포넌트 생성
+        - [x] 위치: 상단 헤더 영역
+        - [x] `Link` 컴포넌트를 사용한 네비게이션
+        - [x] 아이콘: ArrowLeft (lucide-react)
+        - [x] 모바일/데스크톱 반응형 스타일 (모바일: 아이콘만, 데스크톱: 아이콘+텍스트)
+        - [x] 접근성: aria-label 추가
+      - [x] 섹션 구분 구조
+        - [x] 단일 컬럼 레이아웃 (모바일 우선)
+        - [x] 섹션별 카드 스타일 (`border rounded-lg p-6 bg-card`)
+        - [x] 섹션별 마진/패딩 설정 (`space-y-8`)
+        - [x] Placeholder 섹션 영역 (기본 정보, 운영 정보, 지도 섹션)
+    - [x] 로딩 상태 처리
+      - [x] Suspense fallback 설정
+      - [x] Loading 컴포넌트 사용
+      - [x] 로딩 메시지: "관광지 정보를 불러오는 중..."
+      - [x] `PlaceDetailContent` 컴포넌트를 Suspense로 래핑
+    - [x] 에러 처리
+      - [x] 404 페이지 처리 (존재하지 않는 contentId)
+        - [x] `notFound()` 함수 사용 (Next.js 15)
+        - [x] `app/places/[contentId]/not-found.tsx` 생성 (커스텀 404 페이지)
+        - [x] contentId 유효성 검증 실패 시 404 반환
+      - [x] API 에러 처리 (구조 준비 완료, 향후 API 호출 시 적용)
+        - [x] Error 컴포넌트 import 준비
+        - [x] 재시도 기능 구조 준비 (향후 구현 예정)
+    - [x] 기본 메타데이터 설정
+      - [x] `generateMetadata` 함수 구현
+      - [x] 동적 title 생성 (기본값: "관광지 상세", 향후 API 데이터로 업데이트 예정)
+      - [x] 기본 description ("관광지 정보를 확인하세요")
+      - [x] layout.tsx의 metadata template 활용 (`%s | My Trip`)
+  - [x] 라우팅 테스트
+    - [x] 홈에서 TourCard 클릭 시 상세페이지 이동 확인
+      - [x] `components/tour-card.tsx`에 `/places/${contentid}` 링크 확인 완료
+    - [x] URL 파라미터 파싱 확인
+      - [x] contentId가 올바르게 추출되는지 확인 (구현 완료)
+    - [x] 뒤로가기 버튼 동작 확인
+      - [x] 이전 페이지로 돌아가는지 확인 (구현 완료, Link 컴포넌트 사용)
+    - [x] 직접 URL 입력 시 동작 확인 (`/places/125266`)
+      - [x] 정상적인 contentId로 접근 가능한지 확인 (구현 완료)
+    - [x] 존재하지 않는 contentId 처리 확인
+      - [x] 404 페이지 표시 확인 (not-found.tsx 구현 완료)
+      - [x] 에러 메시지 확인 ("관광지를 찾을 수 없습니다")
+- [x] 기본 정보 섹션 (MVP 2.4.1)
+  - [x] `components/tour-detail/detail-info.tsx` 생성
+    - [x] `getDetailCommon()` API 연동
+      - [x] `app/places/[contentId]/page.tsx`에서 API 호출 구현
+      - [x] `TourApiError` 에러 처리 (404는 notFound(), 기타는 Error 컴포넌트 표시)
+      - [x] 데이터를 DetailInfo 컴포넌트에 전달
+    - [x] 관광지명 (대제목)
+      - [x] h1 태그로 표시 (`text-2xl md:text-3xl lg:text-4xl font-bold`)
+    - [x] 대표 이미지 (크게 표시)
+      - [x] `firstimage` 우선, 없으면 `firstimage2` 사용
+      - [x] 이미지 없을 때 기본 placeholder 표시
+      - [x] 반응형 크기 (`aspect-video`)
+      - [x] 이미지 로드 실패 시 에러 처리 (onError 핸들러)
+    - [x] 주소 표시 및 복사 기능
+      - [x] `addr1`과 `addr2` 조합하여 표시
+      - [x] `zipcode`가 있으면 표시
+      - [x] 클립보드 API 사용 (`navigator.clipboard.writeText()`)
+      - [x] 복사 버튼 (Copy 아이콘, lucide-react)
+      - [x] 복사 완료 토스트 (`useToast` 훅 사용)
+      - [x] 복사 실패 시 에러 토스트
+      - [x] `<address>` 태그 사용 (의미론적 HTML)
+    - [x] 전화번호 (클릭 시 전화 연결)
+      - [x] `tel` 필드가 있을 때만 표시
+      - [x] `tel:` 링크로 연결 (`tel:${data.tel.replace(/-/g, "")}`)
+      - [x] Phone 아이콘 (lucide-react)
+    - [x] 홈페이지 (링크)
+      - [x] `homepage` 필드가 있을 때만 표시
+      - [x] 외부 링크 아이콘 표시 (ExternalLink, lucide-react)
+      - [x] 새 탭에서 열기 (`target="_blank"`, `rel="noopener noreferrer"`)
+      - [x] 긴 URL 처리 (`break-all`)
+    - [x] 개요 (긴 설명문)
+      - [x] `overview` 필드 표시
+      - [x] HTML 태그 처리 (`dangerouslySetInnerHTML` 사용)
+      - [x] 긴 텍스트 처리 (`whitespace-pre-wrap`, `leading-relaxed`)
+    - [x] 관광 타입 및 카테고리 뱃지
+      - [x] `getContentTypeName()` 함수 활용 (`lib/types/stats.ts`)
+      - [x] 관광 타입 뱃지 표시 (`bg-primary/10 text-primary`)
+      - [x] 카테고리 (cat1, cat2, cat3)는 현재 API 응답에 없어서 구현하지 않음 (향후 TourDetail 타입에 추가되면 구현 예정)
+    - [x] 정보 없는 항목 숨김 처리
+      - [x] 조건부 렌더링으로 빈 필드 숨김 (`{data.tel && ...}`, `{data.homepage && ...}` 등)
+      - [x] 주소는 `addr1`이 필수이므로 항상 표시
+    - [x] 메타데이터 업데이트
+      - [x] `generateMetadata` 함수에서 API 데이터로 동적 메타데이터 생성
+      - [x] `title`: 관광지명 (`detailData.title`)
+      - [x] `description`: 개요의 첫 100자 (HTML 태그 제거)
+      - [x] `openGraph`: 관광지명, 설명, 이미지 포함
+      - [x] `twitter`: 동일 정보 포함
+      - [x] API 호출 실패 시 기본 메타데이터 반환
+
+---
+
+    - [ ] 추가 개발 내용 (plan 모드에서 구현)
+      - [x] DetailInfo 컴포넌트 기본 구조 생성
+      - [x] 주소 복사 기능 구현 (클립보드 API, Toast 메시지)
+      - [x] 전화번호 및 홈페이지 표시 구현
+      - [x] 개요 표시 구현 (HTML 태그 처리)
+      - [x] 관광 타입 뱃지 구현 (`getContentTypeName` 활용)
+      - [x] page.tsx에서 API 연동 (`getDetailCommon` 호출)
+      - [x] 에러 처리 구현 (TourApiError 처리, 404는 notFound())
+      - [x] 메타데이터 업데이트 (API 데이터로 동적 생성)
+      - [x] 반응형 디자인 검증
+      - [x] 접근성 검증 (aria-label, 의미론적 HTML 태그)
+
+- [x] 운영 정보 섹션 (MVP 2.4.2)
+  - [x] `components/tour-detail/detail-intro.tsx` 생성
+    - [x] `getDetailIntro()` API 연동
+      - [x] `app/places/[contentId]/page.tsx`에서 API 호출 구현
+      - [x] `getDetailCommon()` 호출 후 `contentTypeId` 획득
+      - [x] `getDetailIntro({ contentId, contentTypeId })` 호출
+      - [x] 에러 처리 (404는 데이터 없음 처리, 기타는 콘솔 로그)
+      - [x] 운영 정보 없을 때 섹션 숨김 처리
+    - [x] 공통 필드 표시
+      - [x] 운영시간/개장시간 (`usetime`)
+      - [x] 휴무일 (`restdate`)
+      - [x] 주차 가능 여부 (`parking`)
+      - [x] 반려동물 동반 가능 여부 (`chkpet`) - 🐾 아이콘
+      - [x] 문의처 (`infocenter`)
+    - [x] 관광 타입별 특수 필드 표시
+      - [x] 관광지(12): 체험 안내, 체험 가능 연령
+      - [x] 문화시설(14): 이용요금, 할인 정보, 관람 소요시간
+      - [x] 축제/행사(15): 행사 기간, 행사 장소, 행사 홈페이지
+      - [x] 여행코스(25): 코스 총 거리, 코스 총 소요시간
+      - [x] 레포츠(28): 개장 기간, 예약 안내
+      - [x] 숙박(32): 체크인/체크아웃 시간, 객실 수, 객실 유형
+      - [x] 쇼핑(38): 영업시간, 쉬는 시간
+      - [x] 음식점(39): 대표 메뉴, 취급 메뉴
+    - [x] UI/UX 개선
+      - [x] 아이콘 사용 (Clock, Calendar, Car, Heart, Info 등)
+      - [x] 섹션별 구분 (공통 정보 / 추가 정보)
+      - [x] 반응형 디자인
+      - [x] 의미론적 HTML 태그 사용
+      - [x] 접근성 (섹션 헤딩)
+    - [x] 정보 없는 항목 숨김 처리
+      - [x] 조건부 렌더링으로 빈 필드 숨김
+      - [x] 데이터 없을 때 전체 섹션 숨김 (`return null`)
+    ***
+    - [x] DetailIntro 컴포넌트 기본 구조 생성
+    - [x] 공통 필드 표시 구현 (운영시간, 휴무일, 주차, 반려동물, 문의처)
+    - [x] contentTypeId별 조건부 필드 표시 구현 (`getTypeSpecificFields` 함수)
+    - [x] page.tsx에서 API 연동 (`getDetailIntro` 호출)
+    - [x] 에러 처리 및 데이터 없을 때 처리
+    - [x] 아이콘 및 스타일링 적용 (lucide-react 아이콘)
+    - [x] 반응형 디자인 및 접근성 검증
+- [x] 이미지 갤러리 (MVP 2.4.3)
+  - [x] `components/tour-detail/detail-gallery.tsx` 생성
+  - [x] `getDetailImage()` API 연동
+  - [x] 대표 이미지 + 서브 이미지들
+  - [x] 이미지 슬라이드 기능 (Swiper 또는 캐러셀)
+  - [x] 이미지 클릭 시 전체화면 모달
+  - [x] 이미지 없으면 기본 이미지
+  - [x] Next.js Image 컴포넌트 사용 (최적화)
+  ***
+  - [x] (plan-build) 슬라이더/썸네일/모달 포함한 DetailGallery 구현 완료
+  - [x] (plan-build) detailImage 데이터 패칭 및 상세페이지 섹션 연동 완료
+- [x] 지도 섹션 (MVP 2.4.4)
+  - [x] `components/tour-detail/detail-map.tsx` 생성
+  - [x] 해당 관광지 위치 표시
+  - [x] 마커 1개 표시
+  - [x] "길찾기" 버튼
+    - [x] 네이버 지도 앱/웹 연동
+    - [x] URL: `https://map.naver.com/v5/directions/{좌표}`
+  - [x] 좌표 정보 표시 (선택 사항)
+  - ***
+  - [x] (plan-build) KATEC→WGS84 변환 후 지도/마커 렌더링 완료
+  - [x] (plan-build) 길찾기 버튼 및 좌표 없는 경우 fallback 메시지 구현
+- [x] 공유 기능 (MVP 2.4.5)
+  - [x] `components/tour-detail/share-button.tsx` 생성
+  - [x] URL 복사 기능
+    - [x] `navigator.clipboard.writeText()` 사용
+    - [x] HTTPS 환경 확인
+  - [x] 복사 완료 토스트 메시지
+  - [x] 공유 아이콘 버튼 (Share/Link 아이콘)
+  - [x] Open Graph 메타태그
+    - [x] `app/places/[contentId]/page.tsx`에 Metadata 생성
+    - [x] `og:title` - 관광지명
+    - [x] `og:description` - 관광지 설명 (100자 이내)
+    - [x] `og:image` - 대표 이미지 (1200x630 권장)
+    - [x] `og:url` - 상세페이지 URL
+    - [x] `og:type` - "website"
+  - ***
+  - [x] (plan-build) ShareButton(복사/토스트/HTTPS체크) 구현 및 상세페이지 배치
+  - [x] (plan-build) OG/Twitter 메타에 사이트 URL 적용 및 링크 일관성 보완
+- [x] 북마크 기능 (MVP 2.4.5)
+  - [x] `components/bookmarks/bookmark-button.tsx` 생성
+    - [x] 별 아이콘 (채워짐/비어있음)
+    - [x] 북마크 상태 확인 (Supabase 조회)
+    - [x] 북마크 추가/제거 기능
+    - [x] 인증된 사용자 확인 (Clerk)
+    - [x] 로그인하지 않은 경우: 로그인 유도 또는 안내
+  - [x] Supabase 연동
+    - [x] `lib/api/supabase-bookmark.ts` 생성
+      - [x] `getBookmarkStatus` - 북마크 조회
+      - [x] `toggleBookmark` - 북마크 추가/제거
+    - [x] `bookmarks` 테이블 사용 (db.sql 참고)
+      - [x] `user_id` (users 테이블 참조)
+      - [x] `content_id` (한국관광공사 API contentid)
+      - [x] UNIQUE 제약 (user_id, content_id)
+  - [x] 상세페이지에 북마크 버튼 추가
+  - ***
+  - [x] (plan-build) 서버에서 북마크 상태 조회 후 클라이언트 버튼 초기화
+  - [x] (plan-build) API Route(/api/bookmarks/toggle)로 Supabase 토글 구현
+  - [x] (plan-build) 로그인 유도/토스트/낙관적 업데이트 적용
+- [x] 반려동물 정보 섹션 (MVP 2.5)
+  - [x] `components/tour-detail/detail-pet-tour.tsx` 생성
+    - [x] `getDetailPetTour()` API 연동
+    - [x] 반려동물 동반 가능 여부 표시
+    - [x] 반려동물 크기 제한 정보
+    - [x] 반려동물 입장 가능 장소 (실내/실외)
+    - [x] 반려동물 동반 추가 요금
+    - [x] 반려동물 전용 시설 정보
+    - [x] 아이콘 및 뱃지 디자인 (🐾)
+    - [x] 주의사항 강조 표시
+  - ***
+  - [x] (plan-build) pet 정보 없으면 섹션 숨김, 에러는 콘솔 처리
+  - [x] (plan-build) lucide 아이콘 + 🐾 배지로 정보 시각화
+  - [x] (plan-build) 상세페이지에 PetTour 섹션 연동 완료
+- [x] 반려동물 정보 섹션 (MVP 2.5)
+  - [x] `components/tour-detail/detail-pet-tour.tsx` 생성
+    - [x] `getDetailPetTour()` API 연동
+    - [x] 반려동물 동반 가능 여부 표시
+    - [x] 반려동물 크기 제한 정보
+    - [x] 반려동물 입장 가능 장소 (실내/실외)
+    - [x] 반려동물 동반 추가 요금
+    - [x] 반려동물 전용 시설 정보
+    - [x] 아이콘 및 뱃지 디자인 (🐾)
+    - [x] 주의사항 강조 표시
+  - ***
+  - [x] (plan-build) pet 정보 없을 때 섹션 숨김 및 에러 콘솔 처리
+  - [x] (plan-build) lucide/🐾 아이콘으로 정보 시각화, 상세페이지 연동 완료
 - [ ] 추천 관광지 섹션 (선택 사항)
   - [ ] 같은 지역 또는 타입의 다른 관광지 추천
   - [ ] 카드 형태로 표시

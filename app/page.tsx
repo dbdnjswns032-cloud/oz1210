@@ -1,41 +1,114 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { RiSupabaseFill } from "react-icons/ri";
+/**
+ * @file page.tsx
+ * @description 홈페이지 - 관광지 목록
+ *
+ * 한국관광공사 API를 활용하여 관광지 목록을 표시하는 메인 페이지입니다.
+ * Server Component로 구현되어 초기 데이터를 서버에서 페칭합니다.
+ */
 
-export default function Home() {
+import { Suspense } from "react";
+import { getAreaBasedList, searchKeyword } from "@/lib/api/tour-api";
+import type { HomePageSearchParams } from "@/lib/types/home";
+import type { TourItem } from "@/lib/types/tour";
+import { Loading } from "@/components/ui/loading";
+import { Error } from "@/components/ui/error";
+import { SearchParamsProvider } from "@/components/home/search-params-provider";
+import { HeroSection } from "@/components/home/hero-section";
+import { FiltersSection } from "@/components/home/filters-section";
+import { ContentSection } from "@/components/home/content-section";
+
+interface HomeProps {
+  searchParams: Promise<HomePageSearchParams>;
+}
+
+/**
+ * 초기 데이터 페칭 함수
+ * 쿼리 파라미터에 따라 적절한 API를 호출합니다.
+ */
+async function fetchInitialData(searchParams: HomePageSearchParams) {
+  const { keyword, areaCode, contentTypeId, pageNo = "1" } = searchParams;
+  const pageNoNumber = parseInt(pageNo, 10) || 1;
+
+  try {
+    if (keyword && keyword.trim()) {
+      // 키워드 검색
+      return await searchKeyword({
+        keyword: keyword.trim(),
+        areaCode,
+        contentTypeId,
+        pageNo: pageNoNumber,
+        numOfRows: 20,
+      });
+    } else {
+      // 지역 기반 목록 조회
+      return await getAreaBasedList({
+        areaCode,
+        contentTypeId,
+        pageNo: pageNoNumber,
+        numOfRows: 20,
+      });
+    }
+  } catch (error) {
+    console.error("Failed to fetch initial data:", error);
+    throw error;
+  }
+}
+
+
+
+/**
+ * 홈페이지 메인 컴포넌트
+ */
+export default async function Home({ searchParams }: HomeProps) {
+  // Next.js 15: searchParams를 await 처리
+  const params = await searchParams;
+  
+  let initialData: { items: TourItem[]; totalCount: number } | undefined;
+  let error: { message: string } | undefined;
+
+  try {
+    initialData = await fetchInitialData(params);
+  } catch (err) {
+    let errorMessage = "알 수 없는 오류가 발생했습니다.";
+    try {
+      if (err && typeof err === "object" && "message" in err && typeof err.message === "string") {
+        errorMessage = err.message;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
+    } catch {
+      // ignore
+    }
+    error = {
+      message: errorMessage,
+    };
+  }
+
   return (
-    <main className="min-h-[calc(100vh-80px)] flex items-center px-8 py-16 lg:py-24">
-      <section className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start lg:items-center">
-        {/* 좌측: 환영 메시지 */}
-        <div className="flex flex-col gap-8">
-          <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-            SaaS 앱 템플릿에 오신 것을 환영합니다
-          </h1>
-          <p className="text-xl lg:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed">
-            Next.js, Shadcn, Clerk, Supabase, TailwindCSS로 구동되는 완전한
-            기능의 템플릿으로 다음 프로젝트를 시작하세요.
-          </p>
-        </div>
+    <SearchParamsProvider initialParams={params}>
+      {/* Hero Section */}
+      <HeroSection />
 
-        {/* 우측: 버튼 두 개 세로 정렬 */}
-        <div className="flex flex-col gap-6">
-          <Link href="/storage-test" className="w-full">
-            <Button className="w-full h-28 flex items-center justify-center gap-4 text-xl shadow-lg hover:shadow-xl transition-shadow">
-              <RiSupabaseFill className="w-8 h-8" />
-              <span>Storage 파일 업로드 테스트</span>
-            </Button>
-          </Link>
-          <Link href="/auth-test" className="w-full">
-            <Button
-              className="w-full h-28 flex items-center justify-center gap-4 text-xl shadow-lg hover:shadow-xl transition-shadow"
-              variant="outline"
-            >
-              <RiSupabaseFill className="w-8 h-8" />
-              <span>Clerk + Supabase 인증 연동</span>
-            </Button>
-          </Link>
-        </div>
-      </section>
-    </main>
+      {/* Filters Section */}
+      <FiltersSection />
+
+      {/* Content Section */}
+      <Suspense
+        fallback={
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            <Loading
+              size="lg"
+              text={
+                params.keyword
+                  ? `"${params.keyword}" 검색 중...`
+                  : "관광지 정보를 불러오는 중..."
+              }
+            />
+          </div>
+        }
+      >
+        <ContentSection data={initialData} error={error} />
+      </Suspense>
+    </SearchParamsProvider>
   );
 }

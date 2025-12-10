@@ -229,99 +229,353 @@
 
 ## Phase 2: 홈페이지 (`/`) - 관광지 목록
 
-- [ ] 페이지 기본 구조
-  - [ ] `app/page.tsx` 생성
-    - [ ] 기본 레이아웃 (헤더, 메인, 푸터)
-    - [ ] 반응형 컨테이너 설정
-- [ ] 관광지 목록 기능 (MVP 2.1)
-  - [ ] `components/tour-card.tsx` 생성
-    - [ ] 썸네일 이미지 (기본 이미지 fallback)
-    - [ ] 관광지명
-    - [ ] 주소 표시
-    - [ ] 관광 타입 뱃지
-    - [ ] 간단한 개요 (1-2줄)
-    - [ ] 호버 효과 (scale, shadow)
-    - [ ] 클릭 시 상세페이지 이동
-  - [ ] `components/tour-list.tsx` 생성
-    - [ ] 그리드 레이아웃 (반응형)
-    - [ ] 카드 목록 표시
-    - [ ] 로딩 상태 (Skeleton UI)
-    - [ ] 빈 상태 처리
-  - [ ] API 연동
-    - [ ] `getAreaBasedList()` 호출
-    - [ ] 데이터 파싱 및 표시
-    - [ ] 에러 처리
-- [ ] 필터 기능
-  - [ ] `components/tour-filters.tsx` 생성
-    - [ ] 지역 필터 (시/도 선택)
-      - [ ] `getAreaCode()` API로 지역 목록 로드
-      - [ ] 드롭다운 또는 버튼 그룹
-      - [ ] "전체" 옵션
-    - [ ] 관광 타입 필터
-      - [ ] 관광지(12), 문화시설(14), 축제/행사(15), 여행코스(25), 레포츠(28), 숙박(32), 쇼핑(38), 음식점(39)
-      - [ ] 다중 선택 가능
-      - [ ] "전체" 옵션
-    - [ ] 반려동물 동반 가능 필터 (MVP 2.5)
-      - [ ] 토글 버튼
-      - [ ] 크기별 필터 (소형, 중형, 대형)
-    - [ ] 정렬 옵션
-      - [ ] 최신순 (modifiedtime)
-      - [ ] 이름순 (가나다)
-    - [ ] 필터 상태 관리 (URL 쿼리 파라미터 또는 상태)
-  - [ ] 필터 적용 로직
-    - [ ] 필터 변경 시 API 재호출
-    - [ ] 필터 조합 처리
-- [ ] 검색 기능 (MVP 2.3)
-  - [ ] `components/tour-search.tsx` 생성
-    - [ ] 검색창 UI (헤더 또는 메인 영역)
-    - [ ] 검색 아이콘
-    - [ ] 엔터 또는 버튼 클릭으로 검색
-    - [ ] 검색 중 로딩 스피너
-  - [ ] 검색 API 연동
-    - [ ] `searchKeyword()` 호출
-    - [ ] 검색 결과 표시
-    - [ ] 검색 결과 개수 표시
-    - [ ] 결과 없음 메시지
-  - [ ] 검색 + 필터 조합
-    - [ ] 키워드 + 지역 필터
-    - [ ] 키워드 + 타입 필터
-    - [ ] 모든 필터 동시 적용
-- [ ] 네이버 지도 연동 (MVP 2.2)
-  - [ ] `components/naver-map.tsx` 생성
-    - [ ] Naver Maps API v3 초기화
-    - [ ] 지도 컨테이너 설정
-    - [ ] 초기 중심 좌표 설정
-    - [ ] 줌 레벨 설정
-  - [ ] 마커 표시
-    - [ ] 관광지 목록을 마커로 표시
-    - [ ] 좌표 변환 (KATEC → WGS84: mapx/mapy / 10000000)
-    - [ ] 마커 클릭 시 인포윈도우
-      - [ ] 관광지명
-      - [ ] 간단한 설명
-      - [ ] "상세보기" 버튼
-    - [ ] 관광 타입별 마커 색상 구분 (선택 사항)
-  - [ ] 지도-리스트 연동
-    - [ ] 리스트 항목 클릭 → 지도 이동 및 마커 강조
-    - [ ] 리스트 항목 호버 → 마커 강조 (선택 사항)
-    - [ ] 마커 클릭 → 리스트 항목 강조
-  - [ ] 지도 컨트롤
-    - [ ] 줌 인/아웃 버튼
-    - [ ] 지도 유형 선택 (일반/스카이뷰)
-    - [ ] 현재 위치 버튼 (선택 사항)
-  - [ ] 반응형 레이아웃
-    - [ ] 데스크톱: 리스트(좌측 50%) + 지도(우측 50%) 분할
-    - [ ] 모바일: 탭 형태로 리스트/지도 전환
-- [ ] 페이지네이션
-  - [ ] 무한 스크롤 구현
-    - [ ] Intersection Observer 사용
-    - [ ] 하단 로딩 인디케이터
-    - [ ] 페이지당 10-20개 항목
-  - [ ] 또는 페이지 번호 선택 방식
-- [ ] 최종 통합 및 스타일링
-  - [ ] 모든 기능 통합 테스트
-  - [ ] 반응형 디자인 확인 (모바일/태블릿/데스크톱)
-  - [ ] 로딩 상태 개선
-  - [ ] 에러 처리 개선
+- [x] 페이지 기본 구조
+  - [x] `app/page.tsx` 업데이트
+    - [x] 기존 템플릿 코드 제거
+    - [x] Server Component로 구현 (초기 데이터 페칭용)
+    - [x] 기본 레이아웃 구조 설정
+      - [x] 헤더: Navbar (이미 layout.tsx에 통합됨)
+      - [x] 메인 컨텐츠 영역 구조
+        - [x] Hero Section 구현 - 환영 메시지 및 검색 유도
+        - [x] 필터 및 컨트롤 영역 (Placeholder - Phase 2.3에서 구현 예정)
+        - [x] 콘텐츠 영역 (리스트만 표시, 지도는 Phase 2.5에서 구현)
+        - [x] 페이지네이션 placeholder (Phase 2.6에서 구현 예정)
+      - [x] 푸터: Footer (이미 layout.tsx에 통합됨)
+    ***
+    - [x] `lib/types/home.ts` 생성
+      - [x] `HomePageSearchParams` 인터페이스 정의
+    - [x] Hero Section 구현
+      - [x] 환영 메시지 (대형 헤딩, h1 태그)
+      - [x] 간단한 설명 텍스트 (p 태그)
+      - [x] 반응형 디자인 (모바일/태블릿/데스크톱)
+      - [x] 그라데이션 배경 (from-primary/5)
+    - [x] 반응형 컨테이너 설정
+      - [x] 데스크톱: `max-w-7xl mx-auto px-4` (globals.css의 main 스타일 활용)
+      - [x] 모바일: 전체 너비, 적절한 패딩 (px-4)
+      - [x] 태블릿: 중간 사이즈 대응 (md 브레이크포인트)
+      - [x] Hero Section 반응형 (text-4xl md:text-5xl lg:text-6xl)
+    - [x] 쿼리 파라미터 처리
+      - [x] Next.js 15 App Router 패턴 준수
+        - [x] `searchParams` await 처리 (`const params = await searchParams`)
+      - [x] URL 쿼리 파라미터 읽기 및 파싱
+        - [x] `keyword` - 검색 키워드 (Navbar 검색에서 전달)
+        - [x] `areaCode` - 선택된 지역 코드
+        - [x] `contentTypeId` - 선택된 관광 타입
+        - [x] `pageNo` - 페이지 번호 (기본값: 1, parseInt로 숫자 변환)
+      - [x] 쿼리 파라미터 타입 정의
+        - [x] `HomePageSearchParams` 인터페이스 정의 (`lib/types/home.ts`)
+        - [x] 타입 안전한 파라미터 추출
+      - [x] 검색 파라미터를 상태로 관리 (Client Component 필요 시)
+        - [x] `hooks/use-search-params.ts` 커스텀 훅 생성
+          - [x] `useSearchParams()`로 URL 쿼리 파라미터 읽기
+          - [x] `useRouter()`로 URL 업데이트
+          - [x] `updateParams()` 함수 - 파라미터 병합 및 URL 업데이트
+          - [x] 개별 파라미터 업데이트 함수 (`setKeyword`, `setAreaCode`, `setContentTypeId`, `setPageNo`)
+          - [x] `resetParams()` 함수 - 모든 파라미터 초기화
+          - [x] 필터 변경 시 `pageNo` 자동 리셋 (페이지 1로 이동)
+        - [x] `components/home/search-params-provider.tsx` 생성
+          - [x] SearchParamsProvider 컴포넌트
+          - [x] URL 쿼리 파라미터를 초기 상태로 설정
+          - [x] useSearchParams로 URL 변경 감지 및 상태 동기화
+          - [x] useSearchParamsContext 훅 제공
+          - [x] app/page.tsx에 Provider 통합
+    - [x] 초기 데이터 로딩 구조
+      - [x] Server Component에서 초기 데이터 페칭
+        - [x] `lib/api/tour-api.ts` 함수 사용 (`getAreaBasedList`, `searchKeyword`)
+        - [x] API 호출 에러 처리 (try-catch)
+      - [x] 조건부 API 호출 로직 (`fetchInitialData` 함수)
+        - [x] 검색 키워드가 있으면: `searchKeyword()` 호출
+        - [x] 검색 키워드가 없으면: `getAreaBasedList()` 호출 (기본 목록)
+        - [x] 쿼리 파라미터를 API 함수에 전달
+        - [x] `numOfRows: 20`, `pageNo` 파싱 및 전달
+      - [x] 초기 로딩 상태 전달
+        - [x] 데이터를 `ContentSection` 컴포넌트에 props로 전달
+        - [x] Suspense로 로딩 상태 처리
+        - [x] 에러 상태 전달 및 Error 컴포넌트 표시
+    - [x] 레이아웃 구조 세분화
+      - [x] Hero Section 구현
+        - [x] 환영 메시지 (대형 헤딩, h1 태그) - "한국의 아름다운 관광지를 탐험하세요"
+        - [x] 간단한 설명 텍스트 (p 태그)
+        - [x] 반응형 디자인 (text-4xl md:text-5xl lg:text-6xl)
+        - [x] 그라데이션 배경 (from-primary/5 via-background to-primary/5)
+      - [x] 필터 및 컨트롤 영역 (Placeholder)
+        - [x] 위치: 상단 Sticky 처리 (`sticky top-16 z-40` - Navbar 아래)
+        - [x] 배경색 및 backdrop-blur 설정
+        - [x] placeholder 텍스트 표시 (Phase 2.3에서 구현 예정)
+      - [x] 콘텐츠 영역 구현
+        - [x] 초기 상태: 리스트만 표시 (지도는 Phase 2.5에서 구현)
+        - [x] 그리드 레이아웃 (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)
+        - [x] 관광지 카드 표시 (임시 구현, Phase 2.2에서 tour-card로 교체)
+          - [x] 썸네일 이미지 (이미지 로드 실패 시 숨김 처리)
+          - [x] 관광지명, 주소, 타입 표시
+          - [x] 호버 효과 (hover:shadow-md)
+        - [x] 빈 상태 처리 (관광지 없을 때)
+        - [x] 총 개수 표시 (`totalCount.toLocaleString()`)
+        - [x] 페이지네이션 placeholder (Phase 2.6에서 구현 예정)
+    - [x] 컴포넌트 분리 계획
+      - [x] `components/home/hero-section.tsx` 생성
+        - [x] HeroSection 컴포넌트를 별도 파일로 분리
+        - [x] 환영 메시지 및 설명 텍스트
+        - [x] 반응형 디자인 및 그라데이션 배경
+        - [x] app/page.tsx에서 import하여 사용
+      - [x] `components/home/filters-section.tsx` 생성 (Placeholder)
+        - [x] FiltersSection 컴포넌트를 별도 파일로 분리
+        - [x] Sticky 처리 및 스타일링
+        - [x] Placeholder 텍스트 (Phase 2.3에서 실제 구현 예정)
+        - [x] app/page.tsx에서 import하여 사용
+      - [x] `components/tour-list.tsx` 생성 (임시 구현)
+        - [x] TourList 컴포넌트 생성
+        - [x] 관광지 목록을 그리드 레이아웃으로 표시
+        - [x] 빈 상태 처리
+        - [x] 임시 카드 UI (Phase 2.2에서 tour-card로 교체 예정)
+        - [x] app/page.tsx의 ContentSection에서 사용
+      - [x] `components/naver-map.tsx` 생성 (Placeholder)
+        - [x] NaverMap 컴포넌트 기본 구조 생성
+        - [x] Props 인터페이스 정의 (items, center, zoom)
+        - [x] Placeholder UI (Phase 2.5에서 실제 구현 예정)
+- [x] 관광지 목록 기능 (MVP 2.1)
+  - [x] `components/tour-card.tsx` 생성
+    - [x] 썸네일 이미지 (기본 이미지 fallback)
+      - [x] 이미지 로드 실패 시 SVG placeholder 표시
+      - [x] 이미지 없을 때 기본 이미지 표시
+    - [x] 관광지명 (title, line-clamp-2로 2줄 제한)
+    - [x] 주소 표시 (addr1, addr2 통합 표시)
+    - [x] 관광 타입 뱃지 (getContentTypeName() 활용)
+      - [x] primary/10 배경색과 primary 텍스트 색상
+    - [x] 호버 효과 (scale, shadow)
+      - [x] hover:scale-[1.02] 적용
+      - [x] hover:shadow-lg 적용
+      - [x] 이미지 hover 시 scale-105 적용
+    - [x] 클릭 시 상세페이지 이동 (`/places/[contentId]`)
+      - [x] Next.js Link 컴포넌트 사용
+      - [x] 접근성: aria-label 추가
+      - [x] 키보드 네비게이션 지원 (focus:ring-2)
+  - [x] `components/tour-list.tsx` 개선
+    - [x] 그리드 레이아웃 (반응형)
+      - [x] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 유지
+    - [x] 카드 목록 표시
+      - [x] TourCard 컴포넌트 사용
+      - [x] 기존 임시 카드 UI 제거
+    - [x] 로딩 상태 (Skeleton UI)
+      - [x] isLoading prop 추가 (선택적)
+      - [x] TourCardSkeleton 컴포넌트 생성
+      - [x] 스켈레톤 카드 6개 표시 (3x2 그리드)
+      - [x] 이미지 및 텍스트 영역 스켈레톤
+    - [x] 빈 상태 처리
+      - [x] 빈 상태 메시지 개선
+      - [x] 사용자 친화적인 안내 메시지
+  - [x] API 연동
+    - [x] `getAreaBasedList()` 호출 확인
+      - [x] app/page.tsx의 fetchInitialData에서 이미 구현됨
+    - [x] 데이터 파싱 및 표시 확인
+      - [x] TourList에 items와 totalCount 올바르게 전달됨
+    - [x] 에러 처리 확인
+      - [x] ContentSection에서 Error 컴포넌트로 표시
+      - [x] 재시도 기능 제공
+- [x] 필터 기능
+  - [x] `components/tour-filters.tsx` 생성
+    - [x] 지역 필터 (시/도 선택)
+      - [x] `getAreaCode()` API로 지역 목록 로드 (클라이언트 사이드)
+        - [x] `/api/tour?endpoint=area-code` API Route 사용
+        - [x] useEffect로 컴포넌트 마운트 시 로드
+        - [x] 로딩 상태 처리 (Skeleton UI)
+        - [x] 에러 처리
+      - [x] 드롭다운 구현
+        - [x] shadcn/ui Select 컴포넌트 사용
+        - [x] "전체" 옵션 제공
+      - [x] SearchParamsProvider의 `setAreaCode()` 사용
+    - [x] 관광 타입 필터
+      - [x] 관광지(12), 문화시설(14), 축제/행사(15), 여행코스(25), 레포츠(28), 숙박(32), 쇼핑(38), 음식점(39)
+        - [x] `getAllContentTypes()` 함수 활용
+        - [x] `CONTENT_TYPES` 상수 사용
+      - [x] 단일 선택 구현 (Button 그룹)
+        - [x] 선택된 항목 하이라이트 (variant="default")
+        - [x] 미선택 항목은 variant="outline"
+      - [x] "전체" 옵션 제공
+      - [x] SearchParamsProvider의 `setContentTypeId()` 사용
+      ***
+      - [ ] 다중 선택 기능은 향후 구현 (현재 API는 단일 contentTypeId만 지원)
+    - [x] 반려동물 동반 가능 필터 (MVP 2.5)
+      - [x] 토글 버튼
+      - [x] 크기별 필터 (소형, 중형, 대형)
+      - [x] Phase 2.5에서 구현 예정
+      ***
+      - [x] `lib/types/home.ts`에 반려동물 필터 타입 추가
+        - [x] `PetSize` 타입 정의 ("small" | "medium" | "large")
+        - [x] `HomePageSearchParams`에 `petFriendly?: string`, `petSize?: PetSize` 추가
+      - [x] `SearchParamsProvider`에 반려동물 관련 함수 추가
+        - [x] `setPetFriendly(enable: boolean | undefined)` 함수
+        - [x] `setPetSize(size: PetSize | undefined)` 함수
+        - [x] URL 쿼리 파라미터로 관리
+      - [x] `components/tour-filters.tsx`에 `PetFilter` 컴포넌트 구현
+        - [x] Switch 컴포넌트로 "반려동물 동반 가능" 토글 구현
+        - [x] 토글 활성화 시 크기별 필터 (소형, 중형, 대형) 버튼 그룹 표시
+        - [x] 토글 비활성화 시 크기 필터도 자동 초기화
+        - [x] shadcn/ui Switch 컴포넌트 설치
+      - [ ] 실제 필터링 로직 구현 (향후)
+        - [ ] 각 항목의 반려동물 정보 조회하여 필터링
+        - [ ] 성능 최적화 (병렬 조회, 캐싱 등)
+    - [x] 정렬 옵션
+      - [x] HomePageSearchParams 타입 확장
+        - [x] `SortBy` 타입 정의 ("latest" | "name")
+        - [x] `sortBy?: SortBy` 필드 추가
+      - [x] SearchParamsProvider 확장
+        - [x] `setSortBy()` 함수 추가
+        - [x] URL 쿼리 파라미터로 sortBy 관리
+        - [x] 초기 파라미터 및 URL 동기화에 sortBy 포함
+      - [x] 정렬 옵션 UI 구현
+        - [x] `components/tour-filters.tsx`의 SortFilter 컴포넌트 구현
+        - [x] Select 컴포넌트 사용
+        - [x] 옵션: "정렬 안함", "최신순", "이름순"
+      - [x] 정렬 로직 구현
+        - [x] `components/tour-list.tsx`에 정렬 처리
+        - [x] `sortBy` prop 추가
+        - [x] `sortItems()` 함수 구현
+          - [x] 최신순: `modifiedtime` 기준 내림차순 정렬
+          - [x] 이름순: `title` 기준 오름차순 정렬 (localeCompare 사용)
+        - [x] useMemo로 정렬 결과 메모이제이션
+      - [x] ContentSection 정렬 연동
+        - [x] `components/home/content-section.tsx` 생성 (Client Component)
+        - [x] `useSearchParamsContext()` 훅으로 sortBy 파라미터 조회
+        - [x] `TourList`에 sortBy prop 전달
+        - [x] `app/page.tsx`에서 ContentSection import 변경
+    - [x] 필터 상태 관리 (URL 쿼리 파라미터)
+      - [x] SearchParamsProvider를 통한 상태 관리
+      - [x] URL 쿼리 파라미터로 동기화
+      - [x] 필터 변경 시 URL 업데이트 및 자동 갱신
+  - [x] 필터 적용 로직
+    - [x] 필터 변경 시 API 재호출
+      - [x] `router.replace()`를 통한 URL 업데이트
+      - [x] Server Component 자동 재렌더링
+      - [x] `fetchInitialData` 함수가 새로운 파라미터로 API 호출
+    - [x] 필터 조합 처리
+      - [x] 지역 + 관광 타입 조합 지원
+      - [x] 키워드 검색 + 필터 조합 지원
+      - [x] 필터 변경 시 pageNo 자동 리셋
+- [x] 검색 기능 (MVP 2.3)
+  - [x] `components/tour-search.tsx` 생성
+    - [x] 검색창 UI (헤더 또는 메인 영역) - Navbar에 구현됨
+    - [x] 검색 아이콘
+    - [x] 엔터 또는 버튼 클릭으로 검색
+    - [x] 검색 중 로딩 스피너
+  - [x] 검색 API 연동
+    - [x] `searchKeyword()` 호출
+    - [x] 검색 결과 표시
+    - [x] 검색 결과 개수 표시
+    - [x] 결과 없음 메시지
+  - [x] 검색 + 필터 조합
+    - [x] 키워드 + 지역 필터
+    - [x] 키워드 + 타입 필터
+    - [x] 모든 필터 동시 적용
+  ***
+  - [x] Navbar 검색창 개선
+    - [x] URL의 `keyword` 파라미터를 읽어와서 검색창에 초기값 표시
+    - [x] `useSearchParams` 훅 사용하여 URL 파라미터 동기화
+    - [x] 검색 후 검색창에 현재 검색 키워드 유지
+  - [x] 검색 결과 헤더 개선
+    - [x] `ContentSection`에 검색 모드 감지 로직 추가
+    - [x] 검색 키워드가 있을 때 "검색 결과: '{keyword}'" 형식으로 표시
+    - [x] 검색 결과 개수 표시 ("총 N개의 검색 결과가 있습니다")
+  - [x] 검색 결과 없음 메시지 개선
+    - [x] `TourList` 컴포넌트에 `searchKeyword` prop 추가
+    - [x] 검색 키워드가 있을 때 "'{keyword}'에 대한 검색 결과가 없습니다" 메시지 표시
+  - [x] 검색 중 로딩 상태 개선
+    - [x] `app/page.tsx`의 Suspense fallback에서 검색 키워드에 따라 로딩 메시지 변경
+    - [x] 검색 중일 때 "'{keyword}' 검색 중..." 메시지 표시
+- [x] 네이버 지도 연동 (MVP 2.2)
+  - [x] `components/naver-map.tsx` 생성
+    - [x] Naver Maps API v3 초기화
+    - [x] 지도 컨테이너 설정
+    - [x] 초기 중심 좌표 설정
+    - [x] 줌 레벨 설정
+    ***
+    - [x] `lib/utils/map.ts` 생성 - 좌표 변환 유틸리티 함수
+      - [x] `convertKatecToWgs84()` 함수 구현 (KATEC → WGS84)
+      - [x] `calculateCenter()` 함수 구현 (관광지 목록의 중심 좌표 계산)
+    - [x] `app/layout.tsx`에 Naver Maps API 스크립트 로드 추가
+      - [x] Next.js Script 컴포넌트 사용
+      - [x] `ncpKeyId` 파라미터로 Client ID 전달
+      - [x] `strategy="lazyOnload"`로 성능 최적화
+  - [x] 마커 표시
+    - [x] 관광지 목록을 마커로 표시
+    - [x] 좌표 변환 (KATEC → WGS84: mapx/mapy / 10000000)
+    - [x] 마커 클릭 시 인포윈도우
+      - [x] 관광지명
+      - [x] 간단한 설명 (주소)
+      - [x] "상세보기" 버튼
+    - [ ] 관광 타입별 마커 색상 구분 (선택 사항, 향후 구현)
+  - [x] 지도-리스트 연동
+    - [x] 리스트 항목 클릭 → 지도 이동 및 마커 강조
+    - [ ] 리스트 항목 호버 → 마커 강조 (선택 사항, 향후 구현)
+    - [x] 마커 클릭 → 리스트 항목 강조
+    ***
+    - [x] `components/home/content-section.tsx` 업데이트
+      - [x] NaverMap 컴포넌트 통합
+      - [x] 선택된 관광지 ID 상태 관리
+      - [x] 리스트 항목 클릭 핸들러 구현
+      - [x] 마커 클릭 핸들러 구현
+    - [x] `components/tour-list.tsx` 업데이트
+      - [x] `onCardClick` prop 추가
+      - [x] `selectedContentId` prop 추가
+      - [x] 선택된 카드 강조 (ring 스타일)
+    - [x] `components/naver-map.tsx` 업데이트
+      - [x] 선택된 관광지로 지도 이동 기능
+      - [x] 선택된 마커 강조 (크기 변경)
+  - [x] 지도 컨트롤
+    - [x] 줌 인/아웃 버튼 (네이버 지도 기본 컨트롤)
+    - [x] 지도 유형 선택 (일반/스카이뷰) - 네이버 지도 기본 컨트롤
+    - [ ] 현재 위치 버튼 (선택 사항, 향후 구현)
+  - [x] 반응형 레이아웃
+    - [x] 데스크톱: 리스트(좌측 50%) + 지도(우측 50%) 분할
+    - [x] 모바일: 탭 형태로 리스트/지도 전환
+    ***
+    - [x] shadcn/ui Tabs 컴포넌트 설치
+    - [x] 데스크톱 레이아웃: `hidden lg:grid lg:grid-cols-2`
+    - [x] 모바일 레이아웃: `lg:hidden` + Tabs 컴포넌트
+    - [x] 리스트 항목 클릭 시 모바일에서 자동으로 지도 탭 전환
+- [x] 페이지네이션
+  - [x] 무한 스크롤 구현
+    - [x] Intersection Observer 사용 (`hooks/use-infinite-scroll.ts`)
+    - [x] 하단 로딩 인디케이터 (Loading 컴포넌트 사용)
+    - [x] 페이지당 20개 항목
+    - [x] 다음 페이지 로드 상태 표시
+    - [x] 에러 처리 및 재시도 기능
+    - [x] "모든 관광지를 불러왔습니다" 메시지
+    ***
+    - [x] `hooks/use-infinite-scroll.ts` 생성 - Intersection Observer 기반 무한 스크롤 훅
+    - [x] `ContentSection`에 페이지네이션 데이터 관리 로직 추가
+      - [x] `allItems` 상태로 누적 아이템 관리
+      - [x] `currentPage` 상태 관리
+      - [x] `hasNextPage` 계산 (로드된 개수 < totalCount)
+      - [x] 필터 변경 시 데이터 자동 리셋
+    - [x] 클라이언트 사이드 API 호출 로직 구현
+      - [x] `/api/tour` 엔드포인트 활용
+      - [x] 다음 페이지 데이터 로드 함수 (`fetchNextPage`)
+      - [x] 중복 제거 로직 (contentid 기준)
+      - [x] 에러 처리 및 로딩 상태 관리
+    - [x] 무한 스크롤 UI 구현
+      - [x] 하단 감지 영역 (Intersection Observer 타겟)
+      - [x] 로딩 인디케이터 (다음 페이지 로딩 중)
+      - [x] 에러 메시지 및 재시도 버튼
+      - [x] 완료 메시지 ("모든 관광지를 불러왔습니다")
+      - [x] 로드된 개수 표시 ("N개 로드됨")
+  - [ ] 또는 페이지 번호 선택 방식 (향후 구현)
+- [x] 최종 통합 및 스타일링
+  - [x] 모든 기능 통합 테스트
+    - [x] 필터 + 검색 + 정렬 + 페이지네이션 조합 확인
+    - [x] 지도-리스트 연동 확인
+  - [x] 반응형 디자인 확인 (모바일/태블릿/데스크톱)
+    - [x] 데스크톱: 분할 레이아웃 유지
+    - [x] 모바일: 탭 레이아웃 유지
+    - [x] 무한 스크롤이 양쪽 레이아웃에서 모두 작동
+  - [x] 로딩 상태 개선
+    - [x] 초기 로딩: Suspense fallback (기존 유지)
+    - [x] 다음 페이지 로딩: 하단에 Loading 컴포넌트 표시
+    - [x] 필터 변경 시 데이터 자동 리셋
+  - [x] 에러 처리 개선
+    - [x] API 호출 실패 시 사용자 친화적 메시지
+    - [x] 재시도 기능 (버튼 클릭)
+    - [x] 부분 실패 시 기존 데이터 유지
 
 ## Phase 3: 상세페이지 (`/places/[contentId]`)
 

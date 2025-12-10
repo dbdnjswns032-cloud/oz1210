@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import { koKR } from "@clerk/localizations";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -47,12 +48,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const naverMapClientId = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
+
   return (
     <ClerkProvider localization={koKR}>
       <html lang="ko">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          {/* 네이버 지도 API 스크립트 로드 */}
+          {naverMapClientId && (
+            <Script
+              src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapClientId}`}
+              strategy="lazyOnload"
+            />
+          )}
           <SyncUserProvider>
             <ToastProvider>
               <div className="flex min-h-screen flex-col">

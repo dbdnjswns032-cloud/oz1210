@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,9 +18,20 @@ import { cn } from "@/lib/utils";
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // URL의 keyword 파라미터를 읽어와서 검색창에 초기값 설정
+  useEffect(() => {
+    const keyword = searchParams.get("keyword");
+    if (keyword) {
+      setSearchKeyword(decodeURIComponent(keyword));
+    } else {
+      setSearchKeyword("");
+    }
+  }, [searchParams]);
 
   /**
    * 검색 실행 함수

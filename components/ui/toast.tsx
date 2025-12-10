@@ -43,7 +43,6 @@ const toastIconColors: Record<ToastVariant, string> = {
 };
 
 function Toast({
-  id,
   title,
   description,
   variant = "default",

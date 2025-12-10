@@ -75,7 +75,7 @@ function getCommonParams(): Record<string, string> {
 /**
  * URL 생성 (쿼리 파라미터 포함)
  */
-function buildUrl(endpoint: string, params: Record<string, string | number | undefined>): string {
+function buildUrl(endpoint: string, params: Record<string, string | number | undefined> | Record<string, any>): string {
   const commonParams = getCommonParams();
   const allParams = { ...commonParams, ...params };
 

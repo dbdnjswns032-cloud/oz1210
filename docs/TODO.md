@@ -31,35 +31,60 @@
 ## Phase 1: 기본 구조 & 공통 설정
 
 - [ ] 프로젝트 셋업
-  - [ ] 환경변수 설정 (`.env`)
-    - [ ] `NEXT_PUBLIC_TOUR_API_KEY` (한국관광공사 API)
-    - [ ] `TOUR_API_KEY` (서버 사이드용)
+
+  - [x] 환경변수 설정 (`.env`)
+    - [x] `NEXT_PUBLIC_TOUR_API_KEY` (한국관광공사 API)
+      - [x] 클라이언트 사이드에서 사용 (브라우저 노출됨) - `lib/api/tour-api.ts`에 구현됨
+      - [ ] 한국관광공사 공공데이터포털(data.go.kr)에서 발급 - 문서화 필요
+    - [x] `TOUR_API_KEY` (서버 사이드용)
+      - [x] 서버 사이드에서 우선 사용 (더 안전함) - `lib/api/tour-api.ts`에 구현됨
+      - [x] `NEXT_PUBLIC_TOUR_API_KEY` 없을 때 대체 사용 - 코드에 구현됨
     - [ ] `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID` (네이버 지도)
-    - [ ] Clerk 인증 키 확인
-    - [ ] Supabase 키 확인
-  - [ ] `.env.example` 파일 생성
+      - [ ] 네이버 클라우드 플랫폼(NCP) Maps API 사용 - PRD.md에 문서화만 있음
+      - [ ] Web Dynamic Map 서비스 활성화 필요
+      - [ ] 신용카드 등록 필수 (무료 제공: 월 10,000,000건) - PRD.md에 문서화만 있음
+    - [x] Clerk 인증 키 확인
+      - [x] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` 확인 - README.md에 가이드 있음
+      - [x] `CLERK_SECRET_KEY` 확인 - README.md에 가이드 있음
+      - [x] Clerk Dashboard에서 키 발급 확인 - README.md 6-4절에 가이드 있음
+    - [x] Supabase 키 확인
+      - [x] `NEXT_PUBLIC_SUPABASE_URL` 확인 - README.md에 가이드 있음
+      - [x] `NEXT_PUBLIC_SUPABASE_ANON_KEY` 확인 - README.md에 가이드 있음
+      - [x] `SUPABASE_SERVICE_ROLE_KEY` 확인 (관리자 권한, 보안 주의) - README.md에 가이드 및 주의사항 있음
+      - [x] `NEXT_PUBLIC_STORAGE_BUCKET` 확인 (기본값: "uploads") - README.md에 가이드 있음
+  - [ ] 환경변수 설정 가이드 작성
+    - [ ] `.env.example` 파일 생성 (또는 확인)
+      - [ ] 모든 필수 환경변수 템플릿 포함
+      - [ ] 각 변수에 대한 간단한 설명 주석 추가
+    - [x] 각 환경변수의 용도 설명
+      - [x] 클라이언트 vs 서버 사이드 구분 설명 - README.md와 코드 주석에 있음
+      - [x] 보안 고려사항 (service_role_key 노출 금지) - README.md 6-3절에 주의사항 있음
+    - [ ] 키 발급 방법 가이드 작성
+      - [ ] 한국관광공사 API 키 발급 가이드
+        - [ ] data.go.kr 회원가입 절차
+        - [ ] API 신청 및 인증 절차
+        - [ ] 서비스 키 발급 방법
+      - [ ] 네이버 지도 API 키 발급 가이드
+        - [ ] NCP 회원가입 절차
+        - [ ] Maps API 서비스 신청 방법
+        - [ ] Client ID 발급 방법
+        - [ ] 신용카드 등록 안내
+
 - [x] API 클라이언트 구현
   - [x] `lib/api/tour-api.ts` 생성
     - [x] `getAreaCode()` - 지역코드 조회 (`areaCode2`)
     - [x] `getAreaBasedList()` - 지역 기반 목록 (`areaBasedList2`)
-    - [x] `searchKeyword()` - 키워드 검색 (`searchKeyword2`)
+    - [x] `searchKeyword()` - 키워드 검색 (`searchKeyword2`)- [ ] 프로젝트 셋업
+  - [ ] 환경변수 설정 (`.env`)
     - [x] `getDetailCommon()` - 공통 정보 (`detailCommon2`)
     - [x] `getDetailIntro()` - 소개 정보 (`detailIntro2`)
     - [x] `getDetailImage()` - 이미지 목록 (`detailImage2`)
     - [x] `getDetailPetTour()` - 반려동물 정보 (`detailPetTour2`)
     - [x] 공통 파라미터 처리 (serviceKey, MobileOS, MobileApp, \_type)
     - [x] 에러 처리 및 재시도 로직
-  ***
-  - [x] 추가 구현 사항 (plan build):
-    - [x] `TourApiError` 커스텀 에러 클래스 생성
-    - [x] `getApiKey()` 함수 - 환경변수 처리 (서버/클라이언트 구분)
-    - [x] `getCommonParams()` 함수 - 공통 파라미터 생성
-    - [x] `buildUrl()` 함수 - URL 및 쿼리 파라미터 생성
-    - [x] `fetchWithRetry()` 함수 - 재시도 로직 (최대 3회, 지수 백오프)
-    - [x] `parseApiResponse()` 함수 - API 응답 파싱
-    - [x] `normalizeToArray()` 함수 - 단일 항목/배열 정규화
-    - [x] 각 API 함수의 파라미터 인터페이스 정의 (GetAreaCodeParams, GetAreaBasedListParams 등)
-    - [x] ListResponse 타입을 사용한 목록 응답 구조화
+    ***
+    - [x] TypeScript 타입 에러 수정 (`buildUrl` 함수 파라미터 타입 개선)
+    - [x] API 테스트 스크립트 작성 (`scripts/test-tour-api.ts`)
 - [x] 타입 정의
   - [x] `lib/types/tour.ts` 생성
     - [x] `TourItem` 인터페이스 (목록)
@@ -67,44 +92,140 @@
     - [x] `TourIntro` 인터페이스 (운영정보)
     - [x] `TourImage` 인터페이스 (이미지)
     - [x] `PetTourInfo` 인터페이스 (반려동물)
-  ***
-  - [x] 추가 구현 사항 (plan build):
-    - [x] `AreaCode` 인터페이스 - 지역 코드 정보
-    - [x] `ApiResponse<T>` 제네릭 타입 - API 응답 래퍼
-    - [x] `ListResponse<T>` 타입 - 목록 조회 응답 구조
-    - [x] TourIntro 인터페이스에 contenttypeid별 모든 가능한 필드 포함
-    - [x] 모든 필드를 선택적(optional)으로 정의하여 API 응답 누락 대응
+    - [x] `AreaCode` 인터페이스 (지역코드)
+    - [x] `ApiResponse` 인터페이스 (API 응답 래퍼)
+    - [x] `ListResponse` 인터페이스 (목록 응답)
   - [x] `lib/types/stats.ts` 생성
     - [x] `RegionStats` 인터페이스
     - [x] `TypeStats` 인터페이스
     - [x] `StatsSummary` 인터페이스
-- [x] 레이아웃 구조
+    ***
+    - [x] `ContentTypeId` 타입 정의 (타입 리터럴 유니온)
+    - [x] `CONTENT_TYPES` 상수 매핑 객체 추가
+    - [x] `getContentTypeName()` 유틸리티 함수 추가
+    - [x] `getContentTypeId()` 유틸리티 함수 추가
+    - [x] `getAllContentTypes()` 유틸리티 함수 추가
+- [ ] 레이아웃 구조
   - [x] `app/layout.tsx` 업데이트
-    - [x] 메타데이터 설정
-    - [x] 헤더/푸터 구조 확인
-  ***
-  - [x] 추가 구현 사항 (plan build):
-    - [x] Open Graph 메타 태그 추가 (og:title, og:description, og:type, og:url)
-    - [x] Twitter Card 메타 태그 추가
-    - [x] keywords, authors 메타 태그 추가
-    - [x] title 템플릿 설정 (각 페이지에서 개별 설정 가능)
+    - [x] 메타데이터 설정 (기본 메타데이터 완료)
+    - [x] 푸터 컴포넌트 추가
+      - [x] `components/Footer.tsx` 생성
+      - [x] 저작권 정보 (My Trip © {currentYear} - 동적 연도)
+      - [x] About, Contact 링크 (선택) - 링크 추가됨 (페이지는 향후 구현)
+      - [x] 한국관광공사 API 제공 명시
+      - [x] 반응형 디자인 (모바일/데스크톱)
+        - [x] 모바일: 세로 배치, 구분자 숨김
+        - [x] 데스크톱: 가로 배치, 구분자 표시
+    - [x] 레이아웃에 푸터 통합
+      - [x] `app/layout.tsx`에 Footer 컴포넌트 import 및 추가
+      - [x] 레이아웃 구조 확인 (Navbar + children + Footer)
+        - [x] flex flex-col 구조로 최소 높이 보장
+        - [x] main 영역에 flex-1 적용하여 푸터를 하단에 고정
   - [x] `components/Navbar.tsx` 업데이트
-    - [x] 로고, 검색창, 로그인 버튼
-    - [x] 네비게이션 링크 (홈, 통계, 북마크)
-  ***
-  - [x] 추가 구현 사항 (plan build):
-    - [x] 로고를 "My Trip"으로 변경
-    - [x] 검색창 추가 (데스크톱: 전체 검색창, 모바일: 검색 아이콘)
-    - [x] 네비게이션 링크 추가 (홈, 통계, 북마크 - 인증된 사용자만)
-    - [x] 현재 경로에 따른 활성 링크 스타일링 (usePathname 사용)
-    - [x] 반응형 디자인 (모바일/데스크톱 구분)
-    - [x] sticky 헤더 구현 (스크롤 시 상단 고정)
-    - [x] 접근성 개선 (ARIA 라벨 추가)
-- [ ] 공통 컴포넌트
-  - [ ] `components/ui/loading.tsx` - 로딩 스피너
-  - [ ] `components/ui/skeleton.tsx` - 스켈레톤 UI
-  - [ ] `components/ui/error.tsx` - 에러 메시지
-  - [ ] `components/ui/toast.tsx` - 토스트 알림 (shadcn/ui)
+    - [x] 로고 구현 완료
+    - [x] 검색창 UI 구현 완료
+    - [x] 로그인 버튼 구현 완료
+    - [x] 네비게이션 링크 구현 완료 (홈, 통계, 북마크)
+    - [x] 검색 기능 연동
+      - [x] 검색창 입력 처리 (useState로 상태 관리)
+      - [x] 검색 실행 함수 (`handleSearch`) 구현
+      - [x] 홈페이지로 이동하면서 쿼리 파라미터로 키워드 전달 (`/?keyword=xxx`)
+      - [x] 엔터 키 이벤트 처리 (`handleKeyDown`)
+      - [x] 모바일 검색 모달 (Dialog 사용)
+        - [x] 검색 아이콘 클릭 시 모달 열기
+        - [x] 검색 실행 후 모달 자동 닫기
+        - [x] 검색 버튼 (키워드 없을 때 비활성화)
+    - [x] 모바일 메뉴 개선 (선택)
+      - [x] 햄버거 메뉴 추가 (Menu 아이콘)
+      - [x] 모바일 네비게이션 드로어 (Dialog 사용)
+        - [x] 메뉴 버튼 클릭 시 드로어 열기
+        - [x] 네비게이션 링크 (홈, 통계, 북마크)
+        - [x] 링크 클릭 시 드로어 자동 닫기
+        - [x] 활성 페이지 하이라이트 (pathname 기반)
+  - [x] `app/api/tour/route.ts` 생성 및 구현
+    - [x] API Route 기본 구조 생성
+      - [x] Next.js 15 App Router 패턴 준수
+      - [x] `app/api/tour/route.ts` 파일 생성
+      - [x] GET 메서드 핸들러 구현
+      - [x] 쿼리 파라미터로 엔드포인트 구분 (`?endpoint=area-code`)
+    - [x] API 엔드포인트 라우팅 구현
+      - [x] 쿼리 파라미터 `endpoint`로 라우팅
+      - [x] 각 엔드포인트별 처리 로직 분기 (switch-case)
+      - [x] 지원 엔드포인트 목록:
+        - [x] `area-code` - 지역코드 조회 (`getAreaCode()` 래핑)
+        - [x] `area-based-list` - 지역 기반 목록 (`getAreaBasedList()` 래핑)
+        - [x] `search` - 키워드 검색 (`searchKeyword()` 래핑)
+        - [x] `detail/common` - 상세 공통 정보 (`getDetailCommon()` 래핑)
+        - [x] `detail/intro` - 상세 소개 정보 (`getDetailIntro()` 래핑)
+        - [x] `detail/image` - 이미지 목록 (`getDetailImage()` 래핑)
+        - [x] `detail/pet` - 반려동물 정보 (`getDetailPetTour()` 래핑)
+    - [x] 각 엔드포인트별 쿼리 파라미터 처리
+      - [x] `area-code`: `numOfRows?`, `pageNo?`, `areaCode?`
+      - [x] `area-based-list`: `areaCode?`, `contentTypeId?`, `numOfRows?`, `pageNo?`, `sigunguCode?`, `cat1?`, `cat2?`, `cat3?`
+      - [x] `search`: `keyword` (필수), `areaCode?`, `contentTypeId?`, `numOfRows?`, `pageNo?`
+      - [x] `detail/common`: `contentId` (필수), `contentTypeId?`, 기타 옵션 파라미터 (defaultYN, firstImageYN, areacodeYN, catcodeYN, addrinfoYN, mapinfoYN, overviewYN)
+      - [x] `detail/intro`: `contentId` (필수), `contentTypeId` (필수)
+      - [x] `detail/image`: `contentId` (필수), `imageYN?`, `subImageYN?`
+      - [x] `detail/pet`: `contentId` (필수)
+    - [x] 파라미터 검증 및 기본값 처리
+      - [x] 필수 파라미터 누락 시 400 에러 반환 (`getQueryParam` with `required: true`)
+      - [x] 잘못된 파라미터 타입 검증 (`getQueryParamAsNumber` - NaN 체크)
+      - [x] 기본값 설정 (numOfRows: 10, pageNo: 1 등)
+    - [x] 에러 처리 및 응답 형식
+      - [x] 통일된 응답 형식 정의
+        - [x] 성공: `{ success: true, data: T }`
+        - [x] 실패: `{ success: false, error: string, statusCode?: number }`
+      - [x] TourApiError를 HTTP 응답으로 변환
+        - [x] `TourApiError.statusCode`를 HTTP 상태 코드로 매핑 (`handleError` 함수)
+        - [x] 에러 메시지를 응답에 포함
+      - [x] 적절한 HTTP 상태 코드 매핑
+        - [x] 400: 잘못된 요청 (필수 파라미터 누락, 잘못된 값, 알 수 없는 엔드포인트)
+        - [x] 404: 리소스 없음 (관광지 없음) - TourApiError에서 404 상태 코드 전달
+        - [x] 500: 서버 에러 (API 호출 실패, 재시도 실패, 예상치 못한 에러)
+      - [x] 예외 처리 (try-catch)
+        - [x] 예상치 못한 에러 처리 (handleError 함수에서 catch)
+        - [x] 에러 로깅 (서버 사이드 console.error)
+    - [x] 타입 안정성
+      - [x] 요청 타입 정의
+        - [x] 각 엔드포인트별 쿼리 파라미터 인터페이스 (lib/api/tour-api.ts의 기존 타입 활용)
+        - [x] `NextRequest`에서 파라미터 추출 타입 안전하게 처리 (`URLSearchParams` 사용)
+      - [x] 응답 타입 정의
+        - [x] `NextResponse.json<T>()` 제네릭 타입 활용
+        - [x] 각 엔드포인트별 응답 타입 명시 (ApiSuccessResponse<T>)
+      - [x] `lib/api/tour-api.ts` 함수들의 반환 타입 활용
+    - [x] 문서화
+      - [x] 파일 상단 JSDoc 주석
+      - [x] 각 엔드포인트 사용법 주석 (사용 예시 포함)
+      - [x] 헬퍼 함수 JSDoc 주석
+- [x] 공통 컴포넌트
+  - [x] `components/ui/loading.tsx` - 로딩 스피너
+    - [x] Loader2 아이콘 사용 (lucide-react)
+    - [x] 크기 변형 지원 (sm, md, lg)
+    - [x] 텍스트 표시 옵션
+    - [x] class-variance-authority 사용
+  - [x] `components/ui/skeleton.tsx` - 스켈레톤 UI
+    - [x] animate-pulse 애니메이션
+    - [x] bg-muted 배경색 (다크 모드 지원)
+    - [x] rounded-md 스타일
+  - [x] `components/ui/error.tsx` - 에러 메시지
+    - [x] AlertCircle 아이콘 사용
+    - [x] 에러 메시지 및 상세 설명 표시
+    - [x] 재시도 버튼 옵션
+    - [x] 사용자 친화적인 UI
+  - [x] `components/ui/toast.tsx` - 토스트 알림
+    - [x] Toast 컴포넌트 구현
+    - [x] ToastContainer 컴포넌트 구현
+    - [x] 여러 variant 지원 (default, success, error, warning, info)
+    - [x] 자동 닫기 기능 (duration 설정)
+    - [x] 수동 닫기 버튼
+    - [x] 애니메이션 효과 (fade-in, slide-in)
+    - [x] 반응형 디자인 (모바일/데스크톱)
+    - [x] `hooks/use-toast.ts` - Toast 상태 관리 훅
+      - [x] ToastContext 생성
+      - [x] toast, remove, removeAll 함수 제공
+    - [x] `components/providers/toast-provider.tsx` - Toast Provider
+      - [x] ToastContextProvider와 ToastContainer 통합
+      - [x] app/layout.tsx에 통합 완료
 
 ## Phase 2: 홈페이지 (`/`) - 관광지 목록
 

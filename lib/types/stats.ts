@@ -37,3 +37,51 @@ export interface StatsSummary {
   lastUpdated: string; // 마지막 업데이트 시간 (ISO 8601 형식)
 }
 
+/**
+ * Content Type ID 타입
+ * PRD 4.4장 참조: 관광 타입 ID 정의
+ */
+export type ContentTypeId = "12" | "14" | "15" | "25" | "28" | "32" | "38" | "39";
+
+/**
+ * Content Type ID와 타입명 매핑
+ * PRD 4.4장 참조
+ */
+export const CONTENT_TYPES: Record<ContentTypeId, { id: ContentTypeId; name: string }> = {
+  "12": { id: "12", name: "관광지" },
+  "14": { id: "14", name: "문화시설" },
+  "15": { id: "15", name: "축제/행사" },
+  "25": { id: "25", name: "여행코스" },
+  "28": { id: "28", name: "레포츠" },
+  "32": { id: "32", name: "숙박" },
+  "38": { id: "38", name: "쇼핑" },
+  "39": { id: "39", name: "음식점" },
+} as const;
+
+/**
+ * Content Type ID로 타입명 조회
+ * @param id - Content Type ID (예: "12", "14")
+ * @returns 타입명 (예: "관광지", "문화시설")
+ */
+export function getContentTypeName(id: string): string {
+  return CONTENT_TYPES[id as ContentTypeId]?.name || "알 수 없음";
+}
+
+/**
+ * 타입명으로 Content Type ID 조회
+ * @param name - 타입명 (예: "관광지", "문화시설")
+ * @returns Content Type ID 또는 undefined
+ */
+export function getContentTypeId(name: string): ContentTypeId | undefined {
+  const entry = Object.values(CONTENT_TYPES).find((type) => type.name === name);
+  return entry?.id;
+}
+
+/**
+ * 전체 Content Type 목록 반환
+ * @returns Content Type 배열
+ */
+export function getAllContentTypes(): Array<{ id: ContentTypeId; name: string }> {
+  return Object.values(CONTENT_TYPES);
+}
+

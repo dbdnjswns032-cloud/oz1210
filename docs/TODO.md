@@ -1066,34 +1066,103 @@
 
 ## Phase 5: 북마크 페이지 (`/bookmarks`) - 선택 사항
 
-- [ ] Supabase 설정 확인
-  - [ ] `bookmarks` 테이블 확인 (db.sql 참고)
-    - [ ] `users` 테이블과의 관계 확인
-    - [ ] 인덱스 확인 (user_id, content_id, created_at)
-    - [ ] RLS 비활성화 확인 (개발 환경)
-- [ ] 북마크 목록 페이지
-  - [ ] `app/bookmarks/page.tsx` 생성
-    - [ ] 인증된 사용자만 접근 가능
-    - [ ] 로그인하지 않은 경우 로그인 유도
-  - [ ] `components/bookmarks/bookmark-list.tsx` 생성
-    - [ ] 사용자 북마크 목록 조회 (`getUserBookmarks()`)
-    - [ ] 카드 레이아웃 (홈페이지와 동일한 tour-card 사용)
-    - [ ] 빈 상태 처리 (북마크 없을 때)
-    - [ ] 로딩 상태 (Skeleton UI)
-- [ ] 북마크 관리 기능
-  - [ ] 정렬 옵션
-    - [ ] 최신순 (created_at DESC)
-    - [ ] 이름순 (가나다순)
-    - [ ] 지역별
-  - [ ] 일괄 삭제 기능
-    - [ ] 체크박스 선택
-    - [ ] 선택 항목 삭제
-    - [ ] 확인 다이얼로그
-  - [ ] 개별 삭제 기능
-    - [ ] 각 카드에 삭제 버튼
-- [ ] 페이지 통합 및 스타일링
-  - [ ] 반응형 디자인 확인
-  - [ ] 최종 페이지 확인
+- [x] Supabase 설정 확인
+  - [x] 환경변수 확인
+    - [x] `NEXT_PUBLIC_SUPABASE_URL` 확인
+    - [x] `NEXT_PUBLIC_SUPABASE_ANON_KEY` 확인
+    - [x] `SUPABASE_SERVICE_ROLE_KEY` 확인
+  - [x] Supabase 클라이언트 연결 테스트
+    - [x] `lib/supabase/service-role.ts` 클라이언트 연결 확인
+  - [x] `users` 테이블 확인 (db.sql 참고)
+    - [x] 테이블 존재 확인
+    - [x] 테이블 구조 확인 (id, clerk_id, name, created_at)
+    - [x] 제약조건 확인 (PRIMARY KEY, UNIQUE(clerk_id))
+    - [x] RLS 비활성화 확인 (개발 환경)
+  - [x] `bookmarks` 테이블 확인 (db.sql 참고)
+    - [x] 테이블 존재 확인
+    - [x] 테이블 구조 확인 (id, user_id, content_id, created_at)
+    - [x] `users` 테이블과의 관계 확인 (외래키, ON DELETE CASCADE)
+    - [x] 제약조건 확인 (PRIMARY KEY, UNIQUE(user_id, content_id))
+    - [x] 인덱스 확인 (user_id, content_id, created_at)
+    - [x] RLS 비활성화 확인 (개발 환경)
+  - [x] 마이그레이션 상태 확인
+    - [x] 마이그레이션 파일 검증 (`supabase/migrations/db.sql`)
+    - [x] 확인 스크립트 생성 (`scripts/check-supabase-schema.sql`)
+  - [x] 테스트 데이터 확인
+    - [x] 데이터 삽입/삭제 테스트
+    - [x] 외래키 제약조건 확인
+    - [x] UNIQUE 제약조건 확인
+  - [x] API 함수 연동 확인
+    - [x] `getBookmarkStatus` 함수 테스트
+    - [x] `toggleBookmark` 함수 테스트
+  - [x] 확인 도구 생성
+    - [x] API Route 생성 (`app/api/verify-supabase/route.ts`)
+    - [x] 확인 가이드 문서 작성 (`docs/SUPABASE_VERIFICATION.md`)
+    - [x] SQL 확인 스크립트 작성 (`scripts/check-supabase-schema.sql`)
+    ***
+    - [x] 추가 개발 사항
+      - [x] 자동화된 확인 도구 구현
+        - [x] API Route로 확인 결과 JSON 반환
+        - [x] 환경변수, 연결, 테이블, 데이터, API 함수 통합 확인
+      - [x] 문서화
+        - [x] 확인 가이드 문서 작성
+        - [x] SQL 확인 쿼리 스크립트 작성
+- [x] 북마크 목록 페이지
+  - [x] `app/bookmarks/page.tsx` 생성
+    - [x] 인증된 사용자만 접근 가능
+    - [x] 로그인하지 않은 경우 로그인 유도 (리다이렉트)
+    - [x] 북마크 목록 조회 (`getUserBookmarks()`)
+    - [x] 관광지 상세 정보 조회 (content_id 배열로 `getDetailCommon` 호출)
+    - [x] 메타데이터 생성 (`generateMetadata`)
+    - [x] 빈 상태 처리 (북마크 없을 때)
+    - [x] 로딩 상태 (Suspense + Skeleton UI)
+  - [x] `components/bookmarks/bookmark-list.tsx` 생성
+    - [x] 사용자 북마크 목록 조회 (`getUserBookmarks()`)
+    - [x] 카드 레이아웃 (홈페이지와 동일한 tour-card 사용)
+    - [x] 빈 상태 처리 (북마크 없을 때)
+    - [x] 로딩 상태 (Skeleton UI)
+  - [x] `components/bookmarks/bookmark-list-skeleton.tsx` 생성
+    - [x] 스켈레톤 UI 구현
+- [x] 북마크 관리 기능
+  - [x] 정렬 옵션
+    - [x] 최신순 (created_at DESC)
+    - [x] 이름순 (가나다순)
+    - [x] 지역별
+    - [x] 정렬 UI (Select 컴포넌트)
+    - [x] URL searchParams 연동
+  - [x] 일괄 삭제 기능
+    - [x] 체크박스 선택 (전체 선택/해제)
+    - [x] 선택 항목 삭제
+    - [x] 확인 다이얼로그
+    - [x] 삭제 API Route (`app/api/bookmarks/delete/route.ts`)
+  - [x] 개별 삭제 기능
+    - [x] 각 카드에 삭제 버튼 (호버 시 표시)
+    - [x] 확인 다이얼로그
+    - [x] 북마크 토글 API 호출
+- [x] API 함수 구현
+  - [x] `getUserBookmarks` 함수 구현 (`lib/api/supabase-bookmark.ts`)
+    - [x] Clerk userId로 사용자 ID 조회
+    - [x] 북마크 목록 조회 (content_id 목록)
+    - [x] 정렬 옵션 지원 (최신순, 이름순, 지역별)
+    - [x] 에러 처리
+  - [x] 북마크 삭제 API Route (`app/api/bookmarks/delete/route.ts`)
+    - [x] POST 핸들러 구현
+    - [x] 인증 확인 (Clerk)
+    - [x] 일괄 삭제 처리
+    - [x] 에러 처리 및 응답
+- [x] 페이지 통합 및 스타일링
+  - [x] 반응형 디자인 확인 (모바일: 1열, 태블릿: 2열, 데스크톱: 3열)
+  - [x] 접근성 (ARIA 라벨, 키보드 네비게이션)
+  - [x] 네비게이션 통합 확인 (Navbar에 이미 북마크 링크 존재)
+  - [x] 최종 페이지 확인
+    ***
+    - [x] 추가 개발 사항
+      - [x] TourDetail을 TourItem으로 변환하는 유틸리티 함수 구현
+      - [x] 북마크 목록 스켈레톤 컴포넌트 분리
+      - [x] 체크박스 선택 상태 관리 (전체 선택/해제)
+      - [x] 삭제 확인 다이얼로그 (일괄 삭제 및 개별 삭제)
+      - [x] 삭제 후 목록 새로고침 (router.refresh())
+      - [x] 에러 처리 및 토스트 메시지
 
 ## Phase 6: 최적화 & 배포
 

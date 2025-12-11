@@ -121,3 +121,45 @@ export async function toggleBookmark(
   return { isBookmarked: true, row: inserted as BookmarkRow };
 }
 
+/**
+ * 사용자 북마크 목록 조회
+ * @param clerkUserId Clerk 사용자 ID
+ * @param sortBy 정렬 옵션 ('latest' | 'name' | 'region')
+ * @returns 북마크 목록 (content_id와 created_at 포함)
+ */
+export async function getUserBookmarks(
+  clerkUserId: string,
+  sortBy: "latest" | "name" | "region" = "latest"
+): Promise<BookmarkRow[]> {
+  const supabase = getServiceRoleClient();
+  const userId = await getUserIdByClerkId(clerkUserId);
+
+  let query = supabase
+    .from("bookmarks")
+    .select("*")
+    .eq("user_id", userId);
+
+  // 정렬 옵션 적용
+  switch (sortBy) {
+    case "latest":
+      query = query.order("created_at", { ascending: false });
+      break;
+    case "name":
+      // 이름순 정렬은 클라이언트에서 처리 (관광지 정보 필요)
+      query = query.order("created_at", { ascending: false });
+      break;
+    case "region":
+      // 지역별 정렬은 클라이언트에서 처리 (관광지 정보 필요)
+      query = query.order("created_at", { ascending: false });
+      break;
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(`Failed to fetch bookmarks: ${error.message}`);
+  }
+
+  return (data || []) as BookmarkRow[];
+}
+

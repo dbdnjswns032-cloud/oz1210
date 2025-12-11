@@ -31,7 +31,7 @@ export class TourApiError extends Error {
   constructor(
     message: string,
     public statusCode?: number,
-    public originalError?: unknown
+    public originalError?: unknown,
   ) {
     super(message);
     this.name = "TourApiError";
@@ -46,14 +46,15 @@ export class TourApiError extends Error {
  */
 function getApiKey(): string {
   // 서버 사이드에서 TOUR_API_KEY 우선 사용
-  const serverKey = typeof window === "undefined" ? process.env.TOUR_API_KEY : undefined;
+  const serverKey =
+    typeof window === "undefined" ? process.env.TOUR_API_KEY : undefined;
   const publicKey = process.env.NEXT_PUBLIC_TOUR_API_KEY;
 
   const apiKey = serverKey || publicKey;
 
   if (!apiKey) {
     throw new TourApiError(
-      "Tour API key is missing. Please set TOUR_API_KEY or NEXT_PUBLIC_TOUR_API_KEY environment variable."
+      "Tour API key is missing. Please set TOUR_API_KEY or NEXT_PUBLIC_TOUR_API_KEY environment variable.",
     );
   }
 
@@ -75,7 +76,10 @@ function getCommonParams(): Record<string, string> {
 /**
  * URL 생성 (쿼리 파라미터 포함)
  */
-function buildUrl(endpoint: string, params: Record<string, string | number | undefined> | Record<string, any>): string {
+function buildUrl(
+  endpoint: string,
+  params: Record<string, string | number | undefined> | Record<string, any>,
+): string {
   const commonParams = getCommonParams();
   const allParams = { ...commonParams, ...params };
 
@@ -106,7 +110,7 @@ function sleep(ms: number): Promise<void> {
 async function fetchWithRetry(
   url: string,
   options: RequestInit = {},
-  maxRetries = 3
+  maxRetries = 3,
 ): Promise<Response> {
   let lastError: Error | null = null;
 
@@ -118,7 +122,7 @@ async function fetchWithRetry(
       if (response.status >= 400 && response.status < 500) {
         throw new TourApiError(
           `API request failed with status ${response.status}`,
-          response.status
+          response.status,
         );
       }
 
@@ -127,14 +131,18 @@ async function fetchWithRetry(
         if (attempt < maxRetries) {
           const delay = Math.pow(2, attempt) * 1000; // 1초, 2초, 4초
           if (process.env.NODE_ENV === "development") {
-            console.log(`[Tour API] Retrying after ${delay}ms (attempt ${attempt + 1}/${maxRetries})`);
+            console.log(
+              `[Tour API] Retrying after ${delay}ms (attempt ${
+                attempt + 1
+              }/${maxRetries})`,
+            );
           }
           await sleep(delay);
           continue;
         }
         throw new TourApiError(
           `API request failed with status ${response.status} after ${maxRetries} retries`,
-          response.status
+          response.status,
         );
       }
 
@@ -152,7 +160,11 @@ async function fetchWithRetry(
       if (attempt < maxRetries) {
         const delay = Math.pow(2, attempt) * 1000; // 1초, 2초, 4초
         if (process.env.NODE_ENV === "development") {
-          console.log(`[Tour API] Network error, retrying after ${delay}ms (attempt ${attempt + 1}/${maxRetries})`);
+          console.log(
+            `[Tour API] Network error, retrying after ${delay}ms (attempt ${
+              attempt + 1
+            }/${maxRetries})`,
+          );
         }
         await sleep(delay);
         continue;
@@ -164,7 +176,7 @@ async function fetchWithRetry(
   throw new TourApiError(
     `API request failed after ${maxRetries} retries: ${lastError?.message}`,
     undefined,
-    lastError
+    lastError,
   );
 }
 
@@ -201,13 +213,18 @@ export interface GetAreaCodeParams {
 /**
  * 지역코드 조회 (areaCode2)
  */
-export async function getAreaCode(params?: GetAreaCodeParams): Promise<AreaCode[]> {
+export async function getAreaCode(
+  params?: GetAreaCodeParams,
+): Promise<AreaCode[]> {
   try {
     const url = buildUrl("/areaCode2", params || {});
     const response = await fetchWithRetry(url);
 
     if (!response.ok) {
-      throw new TourApiError(`Failed to fetch area codes: ${response.statusText}`, response.status);
+      throw new TourApiError(
+        `Failed to fetch area codes: ${response.statusText}`,
+        response.status,
+      );
     }
 
     const data: ApiResponse<AreaCode> = await response.json();
@@ -217,7 +234,13 @@ export async function getAreaCode(params?: GetAreaCodeParams): Promise<AreaCode[
     if (error instanceof TourApiError) {
       throw error;
     }
-    throw new TourApiError(`Failed to get area codes: ${error instanceof Error ? error.message : String(error)}`, undefined, error);
+    throw new TourApiError(
+      `Failed to get area codes: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      undefined,
+      error,
+    );
   }
 }
 
@@ -239,16 +262,23 @@ export interface GetAreaBasedListParams {
  * 지역 기반 목록 조회 (areaBasedList2)
  */
 export async function getAreaBasedList(
-  params: GetAreaBasedListParams = {}
+  params: GetAreaBasedListParams = {},
 ): Promise<ListResponse<TourItem>> {
   try {
     const { numOfRows = 10, pageNo = 1, ...restParams } = params;
-    const url = buildUrl("/areaBasedList2", { numOfRows, pageNo, ...restParams });
+    const url = buildUrl("/areaBasedList2", {
+      numOfRows,
+      pageNo,
+      ...restParams,
+    });
 
     const response = await fetchWithRetry(url);
 
     if (!response.ok) {
-      throw new TourApiError(`Failed to fetch area based list: ${response.statusText}`, response.status);
+      throw new TourApiError(
+        `Failed to fetch area based list: ${response.statusText}`,
+        response.status,
+      );
     }
 
     const data: ApiResponse<TourItem> = await response.json();
@@ -265,7 +295,13 @@ export async function getAreaBasedList(
     if (error instanceof TourApiError) {
       throw error;
     }
-    throw new TourApiError(`Failed to get area based list: ${error instanceof Error ? error.message : String(error)}`, undefined, error);
+    throw new TourApiError(
+      `Failed to get area based list: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      undefined,
+      error,
+    );
   }
 }
 
@@ -284,16 +320,23 @@ export interface SearchKeywordParams {
  * 키워드 검색 (searchKeyword2)
  */
 export async function searchKeyword(
-  params: SearchKeywordParams
+  params: SearchKeywordParams,
 ): Promise<ListResponse<TourItem>> {
   try {
     const { numOfRows = 10, pageNo = 1, ...restParams } = params;
-    const url = buildUrl("/searchKeyword2", { numOfRows, pageNo, ...restParams });
+    const url = buildUrl("/searchKeyword2", {
+      numOfRows,
+      pageNo,
+      ...restParams,
+    });
 
     const response = await fetchWithRetry(url);
 
     if (!response.ok) {
-      throw new TourApiError(`Failed to search keyword: ${response.statusText}`, response.status);
+      throw new TourApiError(
+        `Failed to search keyword: ${response.statusText}`,
+        response.status,
+      );
     }
 
     const data: ApiResponse<TourItem> = await response.json();
@@ -308,7 +351,13 @@ export async function searchKeyword(
     if (error instanceof TourApiError) {
       throw error;
     }
-    throw new TourApiError(`Failed to search keyword: ${error instanceof Error ? error.message : String(error)}`, undefined, error);
+    throw new TourApiError(
+      `Failed to search keyword: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      undefined,
+      error,
+    );
   }
 }
 
@@ -331,14 +380,17 @@ export interface GetDetailCommonParams {
  * 상세 공통 정보 조회 (detailCommon2)
  */
 export async function getDetailCommon(
-  params: GetDetailCommonParams
+  params: GetDetailCommonParams,
 ): Promise<TourDetail> {
   try {
     const url = buildUrl("/detailCommon2", params);
     const response = await fetchWithRetry(url);
 
     if (!response.ok) {
-      throw new TourApiError(`Failed to fetch detail common: ${response.statusText}`, response.status);
+      throw new TourApiError(
+        `Failed to fetch detail common: ${response.statusText}`,
+        response.status,
+      );
     }
 
     const data: ApiResponse<TourDetail> = await response.json();
@@ -346,7 +398,10 @@ export async function getDetailCommon(
     const normalizedItems = normalizeToArray(items);
 
     if (normalizedItems.length === 0) {
-      throw new TourApiError(`Tour detail not found for contentId: ${params.contentId}`, 404);
+      throw new TourApiError(
+        `Tour detail not found for contentId: ${params.contentId}`,
+        404,
+      );
     }
 
     return normalizedItems[0];
@@ -354,7 +409,13 @@ export async function getDetailCommon(
     if (error instanceof TourApiError) {
       throw error;
     }
-    throw new TourApiError(`Failed to get detail common: ${error instanceof Error ? error.message : String(error)}`, undefined, error);
+    throw new TourApiError(
+      `Failed to get detail common: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      undefined,
+      error,
+    );
   }
 }
 
@@ -370,14 +431,17 @@ export interface GetDetailIntroParams {
  * 상세 소개 정보 조회 (detailIntro2)
  */
 export async function getDetailIntro(
-  params: GetDetailIntroParams
+  params: GetDetailIntroParams,
 ): Promise<TourIntro> {
   try {
     const url = buildUrl("/detailIntro2", params);
     const response = await fetchWithRetry(url);
 
     if (!response.ok) {
-      throw new TourApiError(`Failed to fetch detail intro: ${response.statusText}`, response.status);
+      throw new TourApiError(
+        `Failed to fetch detail intro: ${response.statusText}`,
+        response.status,
+      );
     }
 
     const data: ApiResponse<TourIntro> = await response.json();
@@ -385,7 +449,10 @@ export async function getDetailIntro(
     const normalizedItems = normalizeToArray(items);
 
     if (normalizedItems.length === 0) {
-      throw new TourApiError(`Tour intro not found for contentId: ${params.contentId}`, 404);
+      throw new TourApiError(
+        `Tour intro not found for contentId: ${params.contentId}`,
+        404,
+      );
     }
 
     return normalizedItems[0];
@@ -393,7 +460,13 @@ export async function getDetailIntro(
     if (error instanceof TourApiError) {
       throw error;
     }
-    throw new TourApiError(`Failed to get detail intro: ${error instanceof Error ? error.message : String(error)}`, undefined, error);
+    throw new TourApiError(
+      `Failed to get detail intro: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      undefined,
+      error,
+    );
   }
 }
 
@@ -410,24 +483,51 @@ export interface GetDetailImageParams {
  * 상세 이미지 목록 조회 (detailImage2)
  */
 export async function getDetailImage(
-  params: GetDetailImageParams
+  params: GetDetailImageParams,
 ): Promise<TourImage[]> {
   try {
     const url = buildUrl("/detailImage2", params);
     const response = await fetchWithRetry(url);
 
     if (!response.ok) {
-      throw new TourApiError(`Failed to fetch detail image: ${response.statusText}`, response.status);
+      // 404는 데이터가 없는 것으로 간주
+      if (response.status === 404) {
+        return [];
+      }
+      throw new TourApiError(
+        `Failed to fetch detail image: ${response.statusText}`,
+        response.status,
+      );
     }
 
     const data: ApiResponse<TourImage> = await response.json();
+
+    // items.item이 없으면 빈 배열 반환
+    if (!data.response?.body?.items?.item) {
+      return [];
+    }
+
     const items = parseApiResponse(data);
     return normalizeToArray(items);
   } catch (error) {
+    // TourApiError에서 "items.item is missing" 에러는 빈 배열로 처리
+    if (
+      error instanceof TourApiError &&
+      error.message.includes("items.item is missing")
+    ) {
+      return [];
+    }
+
     if (error instanceof TourApiError) {
       throw error;
     }
-    throw new TourApiError(`Failed to get detail image: ${error instanceof Error ? error.message : String(error)}`, undefined, error);
+    throw new TourApiError(
+      `Failed to get detail image: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      undefined,
+      error,
+    );
   }
 }
 
@@ -443,17 +543,30 @@ export interface GetDetailPetTourParams {
  * 정보가 없을 수 있으므로 null 반환 가능
  */
 export async function getDetailPetTour(
-  params: GetDetailPetTourParams
+  params: GetDetailPetTourParams,
 ): Promise<PetTourInfo | null> {
   try {
     const url = buildUrl("/detailPetTour2", params);
     const response = await fetchWithRetry(url);
 
     if (!response.ok) {
-      throw new TourApiError(`Failed to fetch pet tour info: ${response.statusText}`, response.status);
+      // 404는 데이터가 없는 것으로 간주
+      if (response.status === 404) {
+        return null;
+      }
+      throw new TourApiError(
+        `Failed to fetch pet tour info: ${response.statusText}`,
+        response.status,
+      );
     }
 
     const data: ApiResponse<PetTourInfo> = await response.json();
+
+    // items.item이 없으면 null 반환
+    if (!data.response?.body?.items?.item) {
+      return null;
+    }
+
     const items = parseApiResponse(data);
     const normalizedItems = normalizeToArray(items);
 
@@ -464,6 +577,14 @@ export async function getDetailPetTour(
 
     return normalizedItems[0];
   } catch (error) {
+    // TourApiError에서 "items.item is missing" 에러는 null로 처리
+    if (
+      error instanceof TourApiError &&
+      error.message.includes("items.item is missing")
+    ) {
+      return null;
+    }
+
     // 404 에러는 정보가 없는 것으로 간주하고 null 반환
     if (error instanceof TourApiError && error.statusCode === 404) {
       return null;
@@ -472,7 +593,12 @@ export async function getDetailPetTour(
     if (error instanceof TourApiError) {
       throw error;
     }
-    throw new TourApiError(`Failed to get pet tour info: ${error instanceof Error ? error.message : String(error)}`, undefined, error);
+    throw new TourApiError(
+      `Failed to get pet tour info: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      undefined,
+      error,
+    );
   }
 }
-

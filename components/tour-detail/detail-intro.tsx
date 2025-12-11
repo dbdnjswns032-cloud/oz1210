@@ -40,8 +40,8 @@ export function DetailIntro({ data, contentTypeId }: DetailIntroProps) {
   }
 
   return (
-    <section className="border rounded-lg p-6 bg-card space-y-6">
-      <h2 className="text-xl font-semibold">운영 정보</h2>
+    <section className="border rounded-lg p-4 sm:p-6 bg-card space-y-6" aria-labelledby="detail-intro-heading">
+      <h2 id="detail-intro-heading" className="text-lg sm:text-xl font-semibold">운영 정보</h2>
 
       {/* 공통 정보 */}
       {hasCommonInfo && (
@@ -49,8 +49,8 @@ export function DetailIntro({ data, contentTypeId }: DetailIntroProps) {
           {data.usetime && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                운영시간
+                <Clock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>운영시간</span>
               </h3>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">
                 {data.usetime}
@@ -61,8 +61,8 @@ export function DetailIntro({ data, contentTypeId }: DetailIntroProps) {
           {data.restdate && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                휴무일
+                <Calendar className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>휴무일</span>
               </h3>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">
                 {data.restdate}
@@ -73,8 +73,8 @@ export function DetailIntro({ data, contentTypeId }: DetailIntroProps) {
           {data.parking && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Car className="h-4 w-4" />
-                주차
+                <Car className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>주차</span>
               </h3>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">
                 {data.parking}
@@ -85,12 +85,13 @@ export function DetailIntro({ data, contentTypeId }: DetailIntroProps) {
           {data.chkpet && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Heart className="h-4 w-4" />
-                반려동물 동반
+                <Heart className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>반려동물 동반</span>
               </h3>
               <p className="text-sm leading-relaxed">
                 <span className="inline-flex items-center gap-1">
-                  🐾 {data.chkpet}
+                  <span aria-hidden="true">🐾</span>
+                  <span>{data.chkpet}</span>
                 </span>
               </p>
             </div>
@@ -99,8 +100,8 @@ export function DetailIntro({ data, contentTypeId }: DetailIntroProps) {
           {data.infocenter && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Info className="h-4 w-4" />
-                문의처
+                <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>문의처</span>
               </h3>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">
                 {data.infocenter}
@@ -113,22 +114,23 @@ export function DetailIntro({ data, contentTypeId }: DetailIntroProps) {
       {/* 타입별 특수 정보 */}
       {hasTypeSpecificInfo && (
         <div className="space-y-4 pt-4 border-t">
-          <h3 className="text-lg font-semibold">추가 정보</h3>
+          <h3 className="text-base sm:text-lg font-semibold">추가 정보</h3>
           {getTypeSpecificFields(data, contentTypeId).map((field) => (
             <div key={field.key} className="space-y-2">
               <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                {field.icon}
-                {field.label}
+                <span aria-hidden="true">{field.icon}</span>
+                <span>{field.label}</span>
               </h4>
               {field.link ? (
                 <a
                   href={field.value}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline flex items-center gap-1 break-all"
+                  className="text-sm text-primary hover:underline flex items-center gap-1 break-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                  aria-label={`${field.label}: ${field.value} 새 창에서 열기`}
                 >
                   <span>{field.value}</span>
-                  <ExternalLink className="h-3 w-3 shrink-0" />
+                  <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
                 </a>
               ) : (
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -360,4 +362,7 @@ function getTypeSpecificFields(
 
   return fields;
 }
+
+
+
 

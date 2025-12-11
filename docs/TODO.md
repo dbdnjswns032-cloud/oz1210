@@ -823,79 +823,246 @@
   - ***
   - [x] (plan-build) pet 정보 없을 때 섹션 숨김 및 에러 콘솔 처리
   - [x] (plan-build) lucide/🐾 아이콘으로 정보 시각화, 상세페이지 연동 완료
-- [ ] 추천 관광지 섹션 (선택 사항)
-  - [ ] 같은 지역 또는 타입의 다른 관광지 추천
-  - [ ] 카드 형태로 표시
-- [ ] 최종 통합 및 스타일링
-  - [ ] 모든 섹션 통합
-  - [ ] 반응형 디자인 확인
-  - [ ] 모바일 최적화
-  - [ ] 접근성 확인 (ARIA 라벨, 키보드 네비게이션)
+- [x] 추천 관광지 섹션 (선택 사항)
+  - [x] 같은 지역 또는 타입의 다른 관광지 추천
+  - [x] 카드 형태로 표시
+  ***
+  - [x] 추가 개발 사항
+    - [x] 추천 로직 개선
+      - [x] TourDetail 타입에 areacode 필드 추가 (선택적)
+      - [x] 동일 지역 + 동일 타입 우선 추천 로직 구현
+      - [x] 동일 타입만 대체 추천 로직 구현 (부족한 경우 보충)
+      - [x] 최대 6개 표시 유지
+      - [x] 현재 관광지 제외 필터링
+      - [x] 중복 제거 로직 구현
+    - [x] Recommendations 컴포넌트 개선
+      - [x] 접근성 개선 (aria-labelledby, role="list", role="listitem")
+      - [x] 섹션 제목 개선 ("이런 곳은 어떠세요?" 기본값)
+      - [x] JSDoc 주석 추가
+      - [x] 반응형 디자인 확인 (grid-cols-1 sm:grid-cols-2 lg:grid-cols-3)
+    - [x] 에러 처리 개선
+      - [x] API 호출 실패 시 빈 배열 반환 (섹션 숨김)
+      - [x] 개발 환경에서만 콘솔 로그 출력
+      - [x] 사용자에게 에러 표시하지 않음 (선택적 기능이므로)
+- [x] 최종 통합 및 스타일링
+  - [x] 모든 섹션 통합
+    - [x] 섹션 간 간격 통일 (`space-y-8`)
+    - [x] 섹션별 카드 스타일 통일 (`border rounded-lg p-4 sm:p-6 bg-card`)
+    - [x] 헤더 영역 레이아웃 개선 (모바일: 세로 배치, 데스크톱: 가로 배치)
+    - [x] 섹션 순서 최적화 (기본 정보 → 운영 정보 → 이미지 → 반려동물 → 지도 → 추천)
+  - [x] 반응형 디자인 확인
+    - [x] 모바일 (320px ~ 640px) 검증 및 개선
+    - [x] 태블릿 (640px ~ 1024px) 검증 및 개선
+    - [x] 데스크톱 (1024px+) 검증 및 개선
+    - [x] 컴포넌트별 반응형 개선 (이미지, 갤러리, 지도, 추천 목록)
+  - [x] 모바일 최적화
+    - [x] 터치 인터랙션 개선 (버튼 최소 44x44px)
+    - [x] viewport meta 태그 추가
+    - [x] 이미지 lazy loading 확인
+    - [x] 스크롤 영역 최적화
+  - [x] 접근성 확인 (ARIA 라벨, 키보드 네비게이션)
+    - [x] 섹션별 `aria-labelledby` 추가
+    - [x] 버튼에 명확한 `aria-label` 추가
+    - [x] 이미지에 `alt` 텍스트 추가
+    - [x] 키보드 네비게이션 지원 (포커스 스타일, tabIndex)
+    - [x] 의미론적 HTML 태그 사용 (`<section>`, `<nav>`)
+    - [x] 키보드 단축키 지원 (ESC로 모달 닫기, 화살표로 이미지 네비게이션)
+  - [x] 스타일링 일관성
+    - [x] 색상 일관성 (Primary 색상 통일)
+    - [x] 타이포그래피 계층 구조 통일
+    - [x] 간격 및 패딩 통일
+  - [x] 로딩 상태 및 에러 처리 개선
+    - [x] Suspense fallback 메시지 확인
+    - [x] 부분 실패 시 나머지 섹션 표시 유지
+  - [x] 성능 최적화
+    - [x] Next.js Image 컴포넌트 사용 (DetailInfo)
+    - [x] 이미지 priority 속성 적절히 사용
+    - [x] 이미지 lazy loading 적용
+    - [x] scrollbar-hide 유틸리티 클래스 추가
 
 ## Phase 4: 통계 대시보드 페이지 (`/stats`)
 
-- [ ] 페이지 기본 구조
-  - [ ] `app/stats/page.tsx` 생성
-    - [ ] 기본 레이아웃 구조
-    - [ ] 반응형 레이아웃 설정 (모바일 우선)
-    - [ ] Server Component로 구현
-- [ ] 통계 데이터 수집
-  - [ ] `lib/api/stats-api.ts` 생성
-    - [ ] `getRegionStats()` - 지역별 관광지 개수 집계
-      - [ ] `areaBasedList2` API로 각 지역별 totalCount 조회
-      - [ ] 지역 코드별로 API 호출
-    - [ ] `getTypeStats()` - 타입별 관광지 개수 집계
-      - [ ] `areaBasedList2` API로 각 타입별 totalCount 조회
-      - [ ] contentTypeId별로 API 호출
-    - [ ] `getStatsSummary()` - 전체 통계 요약
-      - [ ] 전체 관광지 수
-      - [ ] Top 3 지역
-      - [ ] Top 3 타입
-      - [ ] 마지막 업데이트 시간
-    - [ ] 병렬 API 호출로 성능 최적화
-    - [ ] 에러 처리 및 재시도 로직
-    - [ ] 데이터 캐싱 (revalidate: 3600)
-- [ ] 통계 요약 카드
-  - [ ] `components/stats/stats-summary.tsx` 생성
-    - [ ] 전체 관광지 수 표시
-    - [ ] Top 3 지역 표시 (카드 형태)
-    - [ ] Top 3 타입 표시 (카드 형태)
-    - [ ] 마지막 업데이트 시간 표시
-    - [ ] 로딩 상태 (Skeleton UI)
-    - [ ] 카드 레이아웃 디자인
-- [ ] 지역별 분포 차트 (Bar Chart)
-  - [ ] `components/stats/region-chart.tsx` 생성
-    - [ ] shadcn/ui Chart 컴포넌트 설치 (Bar)
-    - [ ] recharts 기반 Bar Chart 구현
-    - [ ] X축: 지역명 (서울, 부산, 제주 등)
-    - [ ] Y축: 관광지 개수
-    - [ ] 상위 10개 지역 표시 (또는 전체)
-    - [ ] 바 클릭 시 해당 지역 목록 페이지로 이동
-    - [ ] 호버 시 정확한 개수 표시
-    - [ ] 다크/라이트 모드 지원
-    - [ ] 반응형 디자인
-    - [ ] 로딩 상태
-    - [ ] 접근성 (ARIA 라벨, 키보드 네비게이션)
-- [ ] 타입별 분포 차트 (Donut Chart)
-  - [ ] `components/stats/type-chart.tsx` 생성
-    - [ ] shadcn/ui Chart 컴포넌트 설치 (Pie/Donut)
-    - [ ] recharts 기반 Donut Chart 구현
-    - [ ] 타입별 비율 (백분율)
-    - [ ] 타입별 개수 표시
-    - [ ] 섹션 클릭 시 해당 타입 목록 페이지로 이동
-    - [ ] 호버 시 타입명, 개수, 비율 표시
-    - [ ] 다크/라이트 모드 지원
-    - [ ] 반응형 디자인
-    - [ ] 로딩 상태
-    - [ ] 접근성 (ARIA 라벨)
-- [ ] 페이지 통합
-  - [ ] `app/stats/page.tsx`에 모든 컴포넌트 통합
-    - [ ] 통계 요약 카드 (상단)
-    - [ ] 지역별 분포 차트 (중단)
-    - [ ] 타입별 분포 차트 (하단)
-  - [ ] 에러 처리 (에러 메시지 + 재시도 버튼)
-  - [ ] 네비게이션에 통계 페이지 링크 추가
-  - [ ] 최종 페이지 확인
+- [x] 페이지 기본 구조
+  - [x] `app/stats/page.tsx` 생성
+    - [x] 기본 레이아웃 구조
+    - [x] 반응형 레이아웃 설정 (모바일 우선)
+    - [x] Server Component로 구현
+    ***
+    - [x] (plan-build) StatsPage 컴포넌트 기본 구조 생성
+    - [x] (plan-build) 헤더 섹션 구현 (제목, 설명 텍스트)
+    - [x] (plan-build) 메인 컨텐츠 영역 구현 (Placeholder 섹션)
+    - [x] (plan-build) Suspense 및 Loading 컴포넌트 설정
+    - [x] (plan-build) Error 컴포넌트 import 및 에러 처리 구조 준비
+    - [x] (plan-build) generateMetadata 함수 구현
+    - [x] (plan-build) 반응형 스타일링 적용 (모바일 우선)
+- [x] 통계 데이터 수집
+  - [x] `lib/api/stats-api.ts` 생성
+    - [x] `getRegionStats()` - 지역별 관광지 개수 집계
+      - [x] `areaBasedList2` API로 각 지역별 totalCount 조회
+      - [x] 지역 코드별로 API 호출
+    - [x] `getTypeStats()` - 타입별 관광지 개수 집계
+      - [x] `areaBasedList2` API로 각 타입별 totalCount 조회
+      - [x] contentTypeId별로 API 호출
+    - [x] `getStatsSummary()` - 전체 통계 요약
+      - [x] 전체 관광지 수
+      - [x] Top 3 지역
+      - [x] Top 3 타입
+      - [x] 마지막 업데이트 시간
+    - [x] 병렬 API 호출로 성능 최적화
+    - [x] 에러 처리 및 재시도 로직
+    - [x] 데이터 캐싱 (revalidate: 3600)
+    ***
+    - [x] (plan-build) stats-api.ts 파일 생성 및 기본 구조 구현
+    - [x] (plan-build) getRegionStats() 함수 구현
+      - [x] getAreaCode()로 지역 코드 목록 조회
+      - [x] Promise.all()로 병렬 처리하여 각 지역별 totalCount 조회
+      - [x] 개별 실패 시 해당 지역 제외하고 계속 진행
+      - [x] 모든 지역 조회 실패 시 TourApiError throw
+    - [x] (plan-build) getTypeStats() 함수 구현
+      - [x] getAllContentTypes()로 타입 목록 조회
+      - [x] Promise.all()로 병렬 처리하여 각 타입별 totalCount 조회
+      - [x] 전체 개수 합계로 비율(percentage) 계산
+      - [x] 개별 실패 시 해당 타입 제외하고 계속 진행
+    - [x] (plan-build) getStatsSummary() 함수 구현
+      - [x] getRegionStats()와 getTypeStats() 병렬 호출
+      - [x] 전체 관광지 수 계산 (모든 타입의 count 합계)
+      - [x] Top 3 지역/타입 계산 (count 기준 내림차순 정렬)
+      - [x] 마지막 업데이트 시간 추가
+    - [x] (plan-build) 에러 처리 구현
+      - [x] TourApiError 클래스 사용
+      - [x] 부분 실패 처리 (개별 실패가 전체에 영향 주지 않음)
+      - [x] 개발 환경에서만 에러 로그 출력
+    - [x] (plan-build) 데이터 캐싱 설정
+      - [x] app/stats/page.tsx에 export const revalidate = 3600 추가 (1시간 캐싱)
+- [x] 통계 요약 카드
+  - [x] `components/stats/stats-summary.tsx` 생성
+    - [x] 전체 관광지 수 표시
+    - [x] Top 3 지역 표시 (카드 형태)
+    - [x] Top 3 타입 표시 (카드 형태)
+    - [x] 마지막 업데이트 시간 표시
+    - [x] 로딩 상태 (Skeleton UI)
+    - [x] 카드 레이아웃 디자인
+    ***
+    - [x] (plan-build) StatsSummary 컴포넌트 생성 (Server Component)
+      - [x] getStatsSummary() 함수 호출 및 에러 처리
+      - [x] 전체 관광지 수 카드 구현 (Globe 아이콘, 큰 숫자 표시)
+      - [x] Top 3 지역 카드 구현 (Award 아이콘, 리스트 형태, 순위 표시)
+      - [x] Top 3 타입 카드 구현 (Tag 아이콘, 리스트 형태, 순위 표시)
+      - [x] 마지막 업데이트 시간 표시 (Clock 아이콘, 날짜 포맷팅 함수)
+      - [x] 그리드 레이아웃 구현 (반응형: 모바일 1열, 태블릿 2열, 데스크톱 4열)
+      - [x] 숫자 포맷팅 (toLocaleString() 사용)
+    - [x] (plan-build) StatsSummarySkeleton 컴포넌트 생성
+      - [x] 각 카드별 스켈레톤 UI 구현
+      - [x] 로딩 상태 표시
+    - [x] (plan-build) 페이지 통합
+      - [x] app/stats/page.tsx에 StatsSummary 컴포넌트 추가
+      - [x] Suspense로 래핑하여 StatsSummarySkeleton을 fallback으로 사용
+      - [x] Placeholder 섹션을 실제 컴포넌트로 교체
+- [x] 지역별 분포 차트 (Bar Chart)
+  - [x] `components/stats/region-chart.tsx` 생성
+    - [x] shadcn/ui Chart 컴포넌트 설치 (Bar)
+    - [x] recharts 기반 Bar Chart 구현
+    - [x] X축: 지역명 (서울, 부산, 제주 등)
+    - [x] Y축: 관광지 개수
+    - [x] 상위 10개 지역 표시 (또는 전체)
+    - [x] 바 클릭 시 해당 지역 목록 페이지로 이동
+    - [x] 호버 시 정확한 개수 표시
+    - [x] 다크/라이트 모드 지원
+    - [x] 반응형 디자인
+    - [x] 로딩 상태
+    - [x] 접근성 (ARIA 라벨, 키보드 네비게이션)
+    ***
+    - [x] (plan-build) shadcn/ui Chart 컴포넌트 설치 완료
+      - [x] pnpx shadcn@latest add chart 실행
+      - [x] components/ui/chart.tsx 및 card.tsx 생성됨
+    - [x] (plan-build) RegionChart 컴포넌트 생성 (Server Component)
+      - [x] getRegionStats() 함수 호출
+      - [x] 상위 10개 지역 선택 및 정렬 (count 기준 내림차순)
+      - [x] 차트 데이터 형식으로 변환 (name, value, code)
+      - [x] 에러 처리 구현
+    - [x] (plan-build) RegionChartClient 컴포넌트 생성 (Client Component)
+      - [x] recharts BarChart 구현
+      - [x] ChartContainer로 래핑 (shadcn/ui)
+      - [x] XAxis: 지역명 (45도 회전)
+      - [x] YAxis: 관광지 개수 (천 단위 구분)
+      - [x] ChartTooltip 및 ChartTooltipContent 사용
+      - [x] 바 클릭 이벤트 구현 (BarChart onClick 사용)
+      - [x] 호버 시 툴팁 표시 (지역명, 개수)
+      - [x] CSS 변수로 다크/라이트 모드 자동 대응
+      - [x] ResponsiveContainer 대신 ChartContainer 사용 (shadcn/ui 방식)
+      - [x] ARIA 라벨 추가
+    - [x] (plan-build) RegionChartSkeleton 컴포넌트 생성
+      - [x] Card 스타일의 스켈레톤 UI
+      - [x] 차트 영역 크기와 유사한 스켈레톤
+    - [x] (plan-build) 페이지 통합
+      - [x] app/stats/page.tsx에 RegionChart 컴포넌트 추가
+      - [x] Suspense로 래핑하여 RegionChartSkeleton을 fallback으로 사용
+      - [x] Placeholder 섹션을 실제 컴포넌트로 교체
+- [x] 타입별 분포 차트 (Donut Chart)
+  - [x] `components/stats/type-chart.tsx` 생성
+    - [x] shadcn/ui Chart 컴포넌트 설치 (Pie/Donut)
+    - [x] recharts 기반 Donut Chart 구현
+    - [x] 타입별 비율 (백분율)
+    - [x] 타입별 개수 표시
+    - [x] 섹션 클릭 시 해당 타입 목록 페이지로 이동
+    - [x] 호버 시 타입명, 개수, 비율 표시
+    - [x] 다크/라이트 모드 지원
+    - [x] 반응형 디자인
+    - [x] 로딩 상태
+    - [x] 접근성 (ARIA 라벨)
+    ***
+    - [x] 추가 개발 사항
+      - [x] TypeChart 컴포넌트 생성 (Server Component)
+        - [x] getTypeStats() 함수 호출 및 데이터 페칭
+        - [x] 차트 데이터 형식으로 변환 (name, value, percentage, code)
+        - [x] 에러 처리 구현
+      - [x] TypeChartClient 컴포넌트 생성 (Client Component)
+        - [x] recharts PieChart 구현 (Donut Chart - innerRadius 설정)
+        - [x] ChartContainer로 래핑 (shadcn/ui)
+        - [x] ChartTooltip 및 ChartTooltipContent 사용
+        - [x] Pie 섹션 클릭 이벤트 구현 (해당 타입 목록 페이지로 이동)
+        - [x] 호버 시 툴팁 표시 (타입명, 개수, 비율)
+        - [x] 색상 팔레트 구현 (8개 타입별 다른 색상)
+        - [x] Cell 컴포넌트에 호버 효과 및 클릭 이벤트 추가
+        - [x] Legend 구현 (ChartLegendContent 사용)
+        - [x] CSS 변수로 다크/라이트 모드 자동 대응
+        - [x] ARIA 라벨 추가
+      - [x] TypeChartSkeleton 컴포넌트 생성
+        - [x] Card 스타일의 스켈레톤 UI
+        - [x] 차트 영역 크기와 유사한 스켈레톤
+      - [x] 페이지 통합
+        - [x] app/stats/page.tsx에 TypeChart 컴포넌트 추가
+        - [x] Suspense로 래핑하여 TypeChartSkeleton을 fallback으로 사용
+        - [x] Placeholder 섹션을 실제 컴포넌트로 교체
+- [x] 페이지 통합
+  - [x] `app/stats/page.tsx`에 모든 컴포넌트 통합
+    - [x] 통계 요약 카드 (상단)
+    - [x] 지역별 분포 차트 (중단)
+    - [x] 타입별 분포 차트 (하단)
+  - [x] 에러 처리 (에러 메시지 + 재시도 버튼)
+  - [x] 네비게이션에 통계 페이지 링크 추가
+    - [x] Navbar 컴포넌트에 통계 링크 확인 (데스크톱/모바일 모두)
+  - [x] 최종 페이지 확인
+    - [x] 모든 컴포넌트 통합 확인
+    - [x] 접근성 개선 (ARIA 라벨, 섹션 구조)
+    - [x] 반응형 디자인 확인 (모바일/태블릿/데스크톱)
+    - [x] 에러 처리 검증
+    ***
+    - [x] 추가 개발 사항
+      - [x] 페이지 구조 개선
+        - [x] 섹션별 `aria-labelledby` 추가
+        - [x] TODO 주석 제거 및 코드 정리
+        - [x] 헤더 텍스트 반응형 개선
+      - [x] StatsSummary 컴포넌트 접근성 개선
+        - [x] 아이콘에 `aria-hidden="true"` 추가
+        - [x] 리스트에 `role="list"` 및 `role="listitem"` 추가
+        - [x] 숫자에 `aria-label` 추가
+        - [x] 패딩 반응형 개선 (`p-4 sm:p-6`)
+      - [x] 차트 컴포넌트 접근성 개선
+        - [x] RegionChart에 `id` 및 `aria-labelledby` 추가
+        - [x] TypeChart에 `id` 및 `aria-labelledby` 추가
+        - [x] 차트에 `role="img"` 추가
+        - [x] RegionChart 높이 반응형 개선 (`h-[400px] sm:h-[500px]`)
 
 ## Phase 5: 북마크 페이지 (`/bookmarks`) - 선택 사항
 

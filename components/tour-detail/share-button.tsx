@@ -71,12 +71,14 @@ export function ShareButton({ url }: ShareButtonProps) {
       variant="outline"
       size="sm"
       onClick={handleCopy}
-      aria-label="현재 페이지 링크 복사"
+      aria-label={`현재 페이지 링크 복사${isCopying ? " 중" : ""}`}
       disabled={isCopying}
+      className="min-h-[44px] sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
     >
-      <LinkIcon className="h-4 w-4 mr-2" />
-      링크 복사
-      {isCopying && <Copy className="h-3 w-3 ml-2 animate-pulse" />}
+      <LinkIcon className="h-4 w-4 mr-2 shrink-0" aria-hidden="true" />
+      <span className="hidden sm:inline">링크 복사</span>
+      <span className="sm:hidden">복사</span>
+      {isCopying && <Copy className="h-3 w-3 ml-2 animate-pulse shrink-0" aria-hidden="true" />}
     </Button>
   );
 }

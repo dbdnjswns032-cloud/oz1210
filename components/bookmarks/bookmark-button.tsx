@@ -89,15 +89,17 @@ export function BookmarkButton({
       size="sm"
       onClick={handleToggle}
       aria-label={isBookmarked ? "북마크 해제" : "북마크 추가"}
+      aria-pressed={isBookmarked}
       disabled={isPending}
-      className="inline-flex items-center gap-2"
+      className="inline-flex items-center gap-2 min-h-[44px] sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
     >
       {isBookmarked ? (
-        <BookmarkCheck className="h-4 w-4" />
+        <BookmarkCheck className="h-4 w-4 shrink-0" aria-hidden="true" />
       ) : (
-        <Bookmark className="h-4 w-4" />
+        <Bookmark className="h-4 w-4 shrink-0" aria-hidden="true" />
       )}
-      {isBookmarked ? "북마크됨" : "북마크"}
+      <span className="hidden sm:inline">{isBookmarked ? "북마크됨" : "북마크"}</span>
+      <span className="sm:hidden">{isBookmarked ? "저장됨" : "저장"}</span>
     </Button>
   );
 }

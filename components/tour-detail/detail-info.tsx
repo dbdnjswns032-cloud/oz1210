@@ -10,6 +10,7 @@
 
 "use client";
 
+import Image from "next/image";
 import { Copy, Phone, ExternalLink } from "lucide-react";
 import type { TourDetail } from "@/lib/types/tour";
 import { getContentTypeName } from "@/lib/types/stats";
@@ -61,41 +62,44 @@ export function DetailInfo({ data }: DetailInfoProps) {
   };
 
   return (
-    <section className="border rounded-lg p-6 bg-card space-y-6">
+    <section className="border rounded-lg p-4 sm:p-6 bg-card space-y-6" aria-labelledby="detail-info-heading">
       {/* 관광지명 및 타입 뱃지 */}
       <div className="space-y-4">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold flex-1">
+        <div className="flex items-start justify-between gap-3 sm:gap-4 flex-wrap">
+          <h1 id="detail-info-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold flex-1 min-w-0">
             {data.title}
           </h1>
-          <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-md bg-primary/10 text-primary shrink-0">
+          <span className="inline-flex items-center px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-md bg-primary/10 text-primary shrink-0">
             {contentTypeName}
           </span>
         </div>
       </div>
 
       {/* 대표 이미지 */}
-      {mainImage && (
+      {mainImage ? (
         <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden">
-          <img
+          <Image
             src={mainImage}
-            alt={data.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.currentTarget;
-              target.src = DEFAULT_IMAGE;
-              target.alt = `${data.title} (이미지 없음)`;
-            }}
+            alt={`${data.title} 대표 이미지`}
+            fill
+            sizes="(max-width: 768px) 100vw, 1200px"
+            className="object-cover"
+            priority
+            unoptimized={mainImage.startsWith("data:")}
           />
+        </div>
+      ) : (
+        <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden flex items-center justify-center">
+          <span className="text-muted-foreground text-sm">이미지 없음</span>
         </div>
       )}
 
       {/* 주소 */}
       {fullAddress && (
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold">주소</h2>
-          <div className="flex items-start gap-2">
-            <address className="flex-1 text-muted-foreground not-italic">
+          <h2 className="text-base sm:text-lg font-semibold">주소</h2>
+          <div className="flex items-start gap-2 flex-wrap sm:flex-nowrap">
+            <address className="flex-1 text-sm sm:text-base text-muted-foreground not-italic min-w-0 break-words">
               {fullAddress}
               {data.zipcode && ` (${data.zipcode})`}
             </address>
@@ -103,11 +107,11 @@ export function DetailInfo({ data }: DetailInfoProps) {
               variant="outline"
               size="sm"
               onClick={handleCopyAddress}
-              className="shrink-0"
-              aria-label="주소 복사"
+              className="shrink-0 min-h-[44px] sm:min-h-0"
+              aria-label={`주소 "${fullAddress}" 복사`}
             >
-              <Copy className="h-4 w-4 mr-1" />
-              복사
+              <Copy className="h-4 w-4 mr-1" aria-hidden="true" />
+              <span className="sr-only sm:not-sr-only">복사</span>
             </Button>
           </div>
         </div>
@@ -116,12 +120,13 @@ export function DetailInfo({ data }: DetailInfoProps) {
       {/* 전화번호 */}
       {data.tel && (
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold">전화번호</h2>
+          <h2 className="text-base sm:text-lg font-semibold">전화번호</h2>
           <a
             href={`tel:${data.tel.replace(/-/g, "")}`}
-            className="flex items-center gap-2 text-primary hover:underline"
+            className="flex items-center gap-2 text-sm sm:text-base text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+            aria-label={`전화번호 ${data.tel}로 전화하기`}
           >
-            <Phone className="h-4 w-4" />
+            <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>{data.tel}</span>
           </a>
         </div>
@@ -130,14 +135,15 @@ export function DetailInfo({ data }: DetailInfoProps) {
       {/* 홈페이지 */}
       {data.homepage && (
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold">홈페이지</h2>
+          <h2 className="text-base sm:text-lg font-semibold">홈페이지</h2>
           <a
             href={data.homepage}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-primary hover:underline break-all"
+            className="flex items-center gap-2 text-sm sm:text-base text-primary hover:underline break-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+            aria-label={`${data.homepage} 홈페이지 새 창에서 열기`}
           >
-            <ExternalLink className="h-4 w-4 shrink-0" />
+            <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span className="break-all">{data.homepage}</span>
           </a>
         </div>
@@ -146,10 +152,11 @@ export function DetailInfo({ data }: DetailInfoProps) {
       {/* 개요 */}
       {data.overview && (
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold">개요</h2>
+          <h2 className="text-base sm:text-lg font-semibold">개요</h2>
           <div
-            className="text-muted-foreground leading-relaxed whitespace-pre-wrap"
+            className="text-sm sm:text-base text-muted-foreground leading-relaxed whitespace-pre-wrap"
             dangerouslySetInnerHTML={{ __html: data.overview }}
+            aria-label="관광지 개요"
           />
         </div>
       )}

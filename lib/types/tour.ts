@@ -46,6 +46,7 @@ export interface TourDetail {
   firstimage2?: string;
   mapx: string; // 경도 (KATEC 좌표계)
   mapy: string; // 위도 (KATEC 좌표계)
+  areacode?: string; // 지역코드 (추천 기능용)
 }
 
 /**
@@ -166,4 +167,6 @@ export interface ListResponse<T> {
   pageNo?: number;
   numOfRows?: number;
 }
+
+
 

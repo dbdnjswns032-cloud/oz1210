@@ -102,10 +102,10 @@ export function DetailMap({ title, mapx, mapy, address }: DetailMapProps) {
 
   if (!coords) {
     return (
-      <section className="border rounded-lg p-6 bg-card">
-        <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-          <MapPin className="h-5 w-5" />
-          지도
+      <section className="border rounded-lg p-4 sm:p-6 bg-card" aria-labelledby="detail-map-heading">
+        <h2 id="detail-map-heading" className="text-lg sm:text-xl font-semibold mb-3 flex items-center gap-2">
+          <MapPin className="h-5 w-5 shrink-0" aria-hidden="true" />
+          <span>지도</span>
         </h2>
         <p className="text-sm text-muted-foreground">
           좌표 정보가 없어 지도를 표시할 수 없습니다.
@@ -117,19 +117,30 @@ export function DetailMap({ title, mapx, mapy, address }: DetailMapProps) {
   const directionUrl = `https://map.naver.com/v5/directions/${coords.lat},${coords.lng}`;
 
   return (
-    <section className="border rounded-lg p-6 bg-card space-y-4">
+    <section className="border rounded-lg p-4 sm:p-6 bg-card space-y-4" aria-labelledby="detail-map-heading">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-primary" />
+          <MapPin className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
           <div>
-            <h2 className="text-xl font-semibold">지도</h2>
+            <h2 id="detail-map-heading" className="text-lg sm:text-xl font-semibold">지도</h2>
             {address && <p className="text-sm text-muted-foreground">{address}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild aria-label="네이버 지도에서 길찾기">
-            <a href={directionUrl} target="_blank" rel="noopener noreferrer">
-              <Navigation className="h-4 w-4 mr-1" />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            asChild 
+            aria-label={`${title} 네이버 지도에서 길찾기`}
+            className="min-h-[44px] sm:min-h-0"
+          >
+            <a 
+              href={directionUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+            >
+              <Navigation className="h-4 w-4 mr-1" aria-hidden="true" />
               길찾기
             </a>
           </Button>
@@ -140,12 +151,20 @@ export function DetailMap({ title, mapx, mapy, address }: DetailMapProps) {
         ref={mapRef}
         className={cn(
           "w-full rounded-lg bg-muted",
-          "min-h-[400px]",
+          "min-h-[300px] sm:min-h-[400px]",
           !isApiReady && "flex items-center justify-center text-sm text-muted-foreground"
         )}
+        role="img"
+        aria-label={`${title} 위치 지도`}
       >
-        {!isApiReady && !initError && "지도를 불러오는 중입니다..."}
-        {initError && <span className="text-red-500 text-sm">{initError}</span>}
+        {!isApiReady && !initError && (
+          <span aria-live="polite">지도를 불러오는 중입니다...</span>
+        )}
+        {initError && (
+          <span className="text-red-500 text-sm" role="alert">
+            {initError}
+          </span>
+        )}
       </div>
     </section>
   );

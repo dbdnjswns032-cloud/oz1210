@@ -28,6 +28,12 @@ export const metadata: Metadata = {
   description: "전국 관광지 정보를 검색하고 지도에서 확인하세요. 한국관광공사 공공 API를 활용한 관광지 정보 서비스",
   keywords: ["관광지", "여행", "한국", "관광정보", "지도", "My Trip"],
   authors: [{ name: "My Trip" }],
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
   openGraph: {
     type: "website",
     locale: "ko_KR",

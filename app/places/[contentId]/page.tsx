@@ -139,62 +139,116 @@ async function PlaceDetailContent({ contentId }: { contentId: string }) {
     }
   }
 
-  // 추천 관광지 (동일 contentType 기준, 최대 6개)
+  // 추천 관광지 (동일 지역+타입 우선, 동일 타입만 대체, 최대 6개)
   try {
-    const list = await getAreaBasedList({
-      contentTypeId: detailData.contenttypeid,
-      numOfRows: 10,
-      pageNo: 1,
-    });
-    recommendations = list.items
-      .filter((item) => item.contentid !== detailData.contentid)
-      .slice(0, 6);
+    // 우선순위 1: 동일 지역 + 동일 타입
+    if (detailData.areacode) {
+      try {
+        const sameAreaAndType = await getAreaBasedList({
+          areaCode: detailData.areacode,
+          contentTypeId: detailData.contenttypeid,
+          numOfRows: 10,
+          pageNo: 1,
+        });
+
+        const filtered = sameAreaAndType.items
+          .filter((item) => item.contentid !== detailData.contentid)
+          .slice(0, 6);
+
+        recommendations = filtered;
+      } catch (err) {
+        // 지역+타입 조회 실패 시 무시하고 다음 우선순위로
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch same area and type recommendations:", err);
+        }
+      }
+    }
+
+    // 우선순위 2: 동일 타입만 (부족한 경우 보충)
+    if (recommendations.length < 6) {
+      try {
+        const sameType = await getAreaBasedList({
+          contentTypeId: detailData.contenttypeid,
+          numOfRows: 10,
+          pageNo: 1,
+        });
+
+        const filtered = sameType.items
+          .filter(
+            (item) =>
+              item.contentid !== detailData.contentid &&
+              !recommendations.some((rec) => rec.contentid === item.contentid)
+          )
+          .slice(0, 6 - recommendations.length);
+
+        recommendations = [...recommendations, ...filtered];
+      } catch (err) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch same type recommendations:", err);
+        }
+      }
+    }
   } catch (err) {
-    if (err instanceof TourApiError && err.statusCode !== 404) {
-      console.error("Failed to fetch recommendations:", err.message);
+    // 전체 실패 시 빈 배열 유지 (섹션 숨김)
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to fetch recommendations:", err);
     }
   }
 
   return (
     <div className="space-y-8">
       {/* 기본 정보 섹션 */}
-      <div className="flex items-start justify-between gap-3 flex-col sm:flex-row sm:items-center">
-        <div className="flex-1 w-full">
-          <DetailInfo data={detailData} />
+      <section aria-labelledby="detail-info-heading">
+        <div className="flex items-start justify-between gap-4 flex-col sm:flex-row">
+          <div className="flex-1 w-full min-w-0">
+            <DetailInfo data={detailData} />
+          </div>
+          <div className="shrink-0 flex items-center gap-2 w-full sm:w-auto">
+            <BookmarkButton contentId={detailData.contentid} initialIsBookmarked={isBookmarked} />
+            <ShareButton url={shareUrl} />
+          </div>
         </div>
-        <div className="shrink-0 flex items-center gap-2">
-          <BookmarkButton contentId={detailData.contentid} initialIsBookmarked={isBookmarked} />
-          <ShareButton url={shareUrl} />
-        </div>
-      </div>
+      </section>
 
       {/* 운영 정보 섹션 */}
       {introData && (
-        <DetailIntro
-          data={introData}
-          contentTypeId={detailData.contenttypeid as ContentTypeId}
-        />
+        <section aria-labelledby="detail-intro-heading">
+          <DetailIntro
+            data={introData}
+            contentTypeId={detailData.contenttypeid as ContentTypeId}
+          />
+        </section>
       )}
 
       {/* 이미지 갤러리 */}
       {images.length > 0 && (
-        <DetailGallery title={detailData.title} images={images} />
+        <section aria-labelledby="detail-gallery-heading">
+          <DetailGallery title={detailData.title} images={images} />
+        </section>
       )}
 
       {/* 반려동물 정보 섹션 */}
-      {petInfo && <DetailPetTour data={petInfo} />}
+      {petInfo && (
+        <section aria-labelledby="detail-pet-heading">
+          <DetailPetTour data={petInfo} />
+        </section>
+      )}
 
       {/* 지도 섹션 */}
-      <DetailMap
-        title={detailData.title}
-        mapx={detailData.mapx}
-        mapy={detailData.mapy}
-        address={fullAddress}
-      />
+      <section aria-labelledby="detail-map-heading">
+        <DetailMap
+          title={detailData.title}
+          mapx={detailData.mapx}
+          mapy={detailData.mapy}
+          address={fullAddress}
+        />
+      </section>
 
       {/* 추천 관광지 섹션 */}
       {recommendations.length > 0 && (
-        <Recommendations items={recommendations} title="이런 곳은 어떠세요?" />
+        <section aria-labelledby="recommendations-heading">
+          <Recommendations items={recommendations} title="이런 곳은 어떠세요?" />
+        </section>
       )}
     </div>
   );
@@ -274,9 +328,9 @@ export default async function PlaceDetailPage({
       {/* 반응형 컨테이너 */}
       <div className="max-w-4xl mx-auto px-4 py-6 md:py-8">
         {/* 뒤로가기 버튼 */}
-        <div className="mb-6">
+        <nav className="mb-6" aria-label="페이지 네비게이션">
           <BackButton />
-        </div>
+        </nav>
 
         {/* Suspense로 로딩 상태 처리 */}
         <Suspense
